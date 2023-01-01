@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+<mapper namespace="com.sy.bnb.dao.MainDAO">
+	
+	<select id="getTheme" resultType="hashmap">
+		SELECT T_ID, T_NAME, T_ICON_ID
+		FROM THEME_TBL
+	</select>
+	
+	<select id="chkId" parameterType="string" resultType="string">
+		SELECT decode(max(cust_id), NULL, 'N', 'Y') AS chk
+		FROM customer_tbl
+		WHERE cust_id = #{chkId}
+	</select>
+	
+	<select id="getAllLodging" resultType="LodgingVo">
+		SELECT A.L_ID, L_NAME, L_ADDR, PRICE AS basic_price, W_PRICE AS weekend_price, PIC_URL AS main_pic
+		FROM LODGING_TBL A
+		INNER JOIN LODGING_PIC_TBL B
+		ON A.L_ID = B.L_ID
+		WHERE PIC_MAIN = '1'
+	</select>
+	
+</mapper>
+	

@@ -1,0 +1,331 @@
+body{
+	margin: 0;
+}
+.wrap{
+    margin: 0 auto;
+}
+.header{
+    align-items: center;
+    display: flex;
+    border-bottom: 1px solid rgb(235 235 235 / 67%);
+    flex-direction: row;
+    justify-content: space-between;
+}
+.f_t_1{
+	font-size: 48px;
+	font-weight: bolder;
+	padding-bottom: 20px;
+}
+.f_t_2{
+	font-size: 32px;
+	font-weight: bolder;
+	padding-bottom: 20px;
+}
+.f_t_3{
+	font-size: 18px;
+	font-weight: bold;
+	padding-bottom: 20px;
+}
+.f_t_4{
+	font-size: 22px;
+	font-weight: bold;
+}
+.f_3{
+	font-size: 18px;
+}
+.f_5{
+	font-size: 15px;
+}
+.logo-img{
+	display: flex;
+    width: 80px;
+    height: 80px;
+    padding-left: 35px;
+}
+.logo-img img{
+    margin: auto;
+    width: 50px;
+    height: 50px;
+}
+.logo-text{
+	color: #FF385C;
+    font-size: 20px;
+    font-weight: 700;
+    align-self: center;
+}
+.search-div{
+    flex: 0 0 140px;
+}
+.searchBar{
+    display: flex;
+    width: 300px;
+    padding-left: 8px;
+    padding-right: 8px;
+    border: 1px solid rgb(235 235 235 / 67%);;
+    border-radius: 40px;
+    box-shadow: 0 1px 2px rgb(0 0 0 / 8%), 0 4px 12px rgb(0 0 0 / 5%);
+    transition: box-shadow 0.2s ease;
+}
+.searchBar span{
+    width: 1px;
+    height: 24px;
+    background-color: rgb(235 235 235 / 67%);;
+    align-self: center;
+}
+.hostingBar{
+    padding: 20px;
+}
+.gotoHosting{
+	font-size: 14px;
+    width: 182px;
+    padding: 13px;
+    border-radius: 30px;
+}
+.gotoHosting:hover{
+	background: rgb(235 235 235 / 67%);
+}
+.userBar{
+/*     width: 100px; */
+/*     padding-left: 8px; */
+    border: 1px solid rgb(235 235 235 / 67%);;
+    border-radius: 40px;
+    box-shadow: 0 1px 2px rgb(0 0 0 / 8%), 0 4px 12px rgb(0 0 0 / 5%);
+    transition: box-shadow 0.2s ease;
+	margin-right: 50px;
+}
+.userBar-menu{
+	font-size: 14px;
+	background: white;
+	width: 65px;
+    padding: 10px;
+    position: absolute;
+    border: 1px solid rgb(235 235 235 / 67%);;
+    border-radius: 10px;
+    box-shadow: 0 1px 2px rgb(0 0 0 / 8%), 0 4px 12px rgb(0 0 0 / 5%);
+}
+.userBar-menu div{
+	padding: 5px 0px;
+	cursor: pointer;
+}
+.search-btn{
+    width: 88px;
+    height: 48px;
+    background: transparent;
+    cursor: pointer;
+    border: 1px solid transparent;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    text-align: center;
+}
+.middle-btn{
+    width: 120px;
+}
+.search-icon{
+    align-self: center;
+    background-color: #FF385C;
+    border-radius: 50%;
+    padding: 7px;
+    cursor: pointer;
+}
+.search-icon svg{
+	color: white;
+}
+@media (min-width: 745px){
+    .logo-div{
+        flex: 1 0 auto;
+    }
+    .search-div{
+        width: 300px;
+        flex: 1 0 auto;
+    }
+}
+.slideButton {
+    border: 1px solid #ccc;
+    background: white;
+    cursor: pointer;
+    border-radius: 30px;
+    height: 30px;
+}
+.slideButton:hover {
+	  box-shadow: 0 0px 0px rgb(0 0 0 / 0%), 0 2px 12px rgb(0 0 0 / 25%);
+}
+
+/* .modal_login, .modal_register{ */
+.modal{
+    position: absolute;
+    top: 0px;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: none;
+    background-color: rgba(0, 0, 0, 0.4);
+}
+.login_box, .register_box{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 600px;
+    height: auto;
+    text-align: center;
+    background-color: rgb(255, 255, 255);
+    border-radius: 10px;
+    box-shadow: 0 2px 3px 0 rgba(34, 36, 38, 0.15);
+    transform: translateX(-50%) translateY(-50%);
+    overflow: auto;
+}
+.login_header, .register_header{
+    padding: 20px;
+    border-bottom: 1px solid rgb(235 235 235 / 67%);;
+}
+.login_header span, .register_header span{
+    cursor: pointer;
+    float: right;
+}
+.login_form, .register_form{
+    padding: 20px 30px;
+}
+.login_form input, .register_form input{
+    padding: 15px;
+    width: 100%;
+    border-radius: 10px;
+    border: 1px solid rgb(235 235 235 / 67%);
+    margin: 5px 0px;
+    outline: none;
+}
+.register_form label{
+    float: left;
+    width: 100%;
+    text-align: left;
+}
+.form_div{
+	margin-bottom: 10px;
+}
+.form_div_phone input:nth-child(1){
+	width:24%;
+}
+.form_div_phone input:nth-child(2){
+	width:35%;
+}
+.form_div_phone input:nth-child(3){
+	width:35%;
+}
+.login_btn, .register_btn{
+    width: 100%;
+    border-radius: 10px;
+    border: none;
+    padding: 10px;
+    margin-top: 25px;
+    cursor: pointer;
+}
+#air_login{
+    background: rgba(226,15,86,0.85);
+    color: white;
+}
+#kakao_login{
+    background: rgb(247, 225, 17)
+}
+
+/* �׸� ��ư */
+.theme_area{
+    text-align: center;
+    margin: 20px 100px;
+    display: flex;
+    align-items: center;
+}
+#theme_buttons{
+    white-space: nowrap;
+    overflow: hidden;
+}
+.theme_btn{
+	width: 65px;
+	height: 70px;
+	background: transparent;
+    border: none;
+    margin: 0px 10px;
+    text-align: center;
+    cursor: pointer;
+    color: #02020285;
+}
+.theme_btn:hover{
+    color: black;
+    border-bottom: 3px solid #ccc;
+}
+.theme_filter{
+    width: 77px;
+    background: transparent;
+    padding: 10px;
+    margin-left: 15px;
+    border: 1px solid rgb(235 235 235 / 100%);
+    border-radius: 10px;
+    cursor: pointer;
+}
+.theme_filter span{
+    vertical-align: middle;
+}
+
+
+/* ȸ������ */
+.form_msg{
+	color: rgba(226,15,86,0.85);
+	font-size: 14px;
+}
+
+/**/
+.page_title{
+	flex: 1 0 auto;
+	padding-right: 100px;
+    font-size: 28px;
+}
+
+/*  */
+.lodging_list_area{
+	display: grid;
+    grid-auto-flow: row dense;
+    grid-auto-rows: var( --breakpoint-grid_auto-rows, minmax(min-content,max-content) );
+    grid-gap: 40px 24px;
+    grid-template-columns: var( --breakpoint-grid_column-template, repeat(var(--breakpoint-grid_columns,1),minmax(0,1fr)) );
+    padding: 10px 7%;
+}
+@media (min-width:550px){
+.lodging_list_area{--breakpoint-grid_columns:2;}}
+
+@media (min-width:950px){
+.lodging_list_area{--breakpoint-grid_columns:3;}}
+
+@media (min-width:1128px){
+.lodging_list_area{--breakpoint-grid_columns:4;}}
+
+@media (min-width:1640px){
+.lodging_list_area{--breakpoint-grid_columns:5;}}
+
+@media (min-width:1880px){
+.lodging_list_area{--breakpoint-grid_columns:6;}}
+
+.picList_area{
+	width: 100%;
+	aspect-ratio: 1 / 1;
+	cursor: pointer;
+}
+.picList_area:hover{
+}
+.pic_div{
+	width: 100%;
+	height: 100%;
+}
+.pic_div img{
+	width: 100%;
+	height: 100%;
+    border-radius: 20px;
+    object-fit: cover;
+}
+.pic_title{    
+	padding: 10px 2px;
+    font-weight: 600;
+    font-size: 16px;
+}
+.pic_price{
+    padding: 0px 2px;
+    font-weight: 600;
+    font-size: 13px;
+}
