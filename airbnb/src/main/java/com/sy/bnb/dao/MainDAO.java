@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.sy.bnb.model.LodgingVo;
+import com.sy.bnb.model.UserVo;
 
 @Repository
 public class MainDAO {
@@ -26,5 +27,21 @@ public class MainDAO {
 
 	public List<LodgingVo> getAllLodging(){
 		return sqlSession.selectList("getAllLodging");
+	}
+
+	public LodgingVo getLodgingDetail(String l_id) {
+		return sqlSession.selectOne("getLodgingDetail", l_id);
+	}
+	
+	public UserVo getUserInfo(String user_email) {
+		return sqlSession.selectOne("getUserInfo", user_email);
+	}
+	
+	public List<String> getLodgingPic(String l_id){
+		return sqlSession.selectList("getLodgingPic", l_id);
+	}
+	
+	public List<String> getFacility(String l_id){
+		return sqlSession.selectList("getLodgingFacility", l_id);
 	}
 }

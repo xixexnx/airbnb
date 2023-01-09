@@ -210,7 +210,7 @@ body{
 .form_div_phone input:nth-child(3){
 	width:35%;
 }
-.login_btn, .register_btn{
+.login_btn, .register_btn, .reservation_btn{
     width: 100%;
     border-radius: 10px;
     border: none;
@@ -218,9 +218,15 @@ body{
     margin-top: 25px;
     cursor: pointer;
 }
-#air_login{
+#air_login {
     background: rgba(226,15,86,0.85);
     color: white;
+}
+.reservation_btn{
+    background: rgba(226,15,86,0.85);
+    color: white;
+    height: 50px;
+    margin: auto;
 }
 #kakao_login{
     background: rgb(247, 225, 17)
@@ -328,4 +334,63 @@ body{
     padding: 0px 2px;
     font-weight: 600;
     font-size: 13px;
+}
+
+/* 숙소 상세 조회 페이지 */
+.content{
+	padding-top: 20px;
+	max-width: 1180px;
+	margin: auto;
+}
+.lodging_pic_div{
+	height: 300px;
+	border: 1px solid green;
+	border-radius: 12px;
+}
+.content_div{
+	display: flex;
+    justify-content: space-between;
+}
+.detail_div{
+	width: 58.333333333333336%;
+	position: relative;
+}
+.detail_div>div{
+	padding: 30px 0px;
+	border-bottom: 1px solid rgb(221, 221, 221);;
+}
+.scroll_div{
+	width: 33.33333%;
+	position: sticky;
+	height: fit-content;
+	top: 80px;
+	
+	border: 1px solid rgb(221, 221, 221);
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: rgb(0 0 0 / 12%) 0px 6px 16px;
+	
+}
+.lodging_list_area2{
+	display: grid;
+    grid-auto-flow: row dense;
+    grid-auto-rows: var( --breakpoint-grid_auto-rows, minmax(min-content,max-content) );
+    grid-gap: 10px 10px;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    margin-bottom: 30px;
+}
+.pic_div2 {
+    aspect-ratio: 3 / 2;
+    width: 100%;
+    height: 100%;
+}
+.pic_div2.big{
+    grid-column: 1 / 3;
+    grid-row: 1 / 3;
+}
+.pic_div2 img{
+	width: 100%;
+	height: 100%;
+    border-radius: 10px;
+    object-fit: cover;
 }

@@ -7,6 +7,7 @@ import java.util.Map;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.sy.bnb.model.LodgingVo;
+import com.sy.bnb.model.UserVo;
 
 public interface MainService {
 
@@ -14,4 +15,5 @@ public interface MainService {
 	Boolean chkId(String inputId);
 	
 	List<LodgingVo> getAllLodging();
+	LodgingVo getLodgingDetail(String l_id);
 }

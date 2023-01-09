@@ -23,5 +23,38 @@
 		WHERE PIC_MAIN = '1'
 	</select>
 	
+	<select id="getLodgingDetail" parameterType="string" resultType="LodgingVo">
+		SELECT L_ID, A.USER_EMAIL AS USER_EMAIL, L_NAME, L_ADDR, C.S_NAME AS BUILDING_CODE, TO_CHAR(CHECKIN, 'HH24:MI') AS CHECKIN, TO_CHAR(CHECKOUT, 'HH24:MI') AS CHECKOUT, BATH_EA, BEDROOM_EA, BED_EA, L_EXP, BASIC_PERSON, ADD_PERSON, PRICE AS BASIC_PRICE, W_PRICE AS WEEKEND_PRICE 
+		FROM LODGING_TBL A
+		INNER JOIN USER_TBL B
+		ON A.USER_EMAIL = B.USER_EMAIL
+		INNER JOIN STRUCTURE_TBL C
+		ON A.S_ID = C.S_ID
+		WHERE L_ID = #{l_id}
+	</select>
+	
+	<select id="getUserInfo" parameterType="string" resultType="UserVo">
+		SELECT USER_EMAIL, USER_NAME, USER_PHONE, USER_LVL
+		FROM USER_TBL
+		WHERE USER_EMAIL = #{user_email}
+	</select>
+	
+	<select id="getLodgingPic" parameterType="string" resultType="string">
+		SELECT PIC_URL
+		FROM LODGING_TBL A
+		INNER JOIN LODGING_PIC_TBL B
+		ON A.L_ID = B.L_ID
+		WHERE A.L_ID = #{l_id}
+	</select>
+	
+	<select id="getLodgingFacility" parameterType="string" resultType="string">
+		SELECT C.F_NAME
+		FROM LODGING_TBL A
+		INNER JOIN LODGING_FACILITY_TBL B
+		ON A.L_ID = B.L_ID
+		INNER JOIN FACILITY_TBL C
+		ON B.F_ID = C.F_ID
+		WHERE A.L_ID = #{l_id}
+	</select>
 </mapper>
 	

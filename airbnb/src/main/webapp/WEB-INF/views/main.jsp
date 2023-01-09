@@ -66,11 +66,6 @@
     </div>
     
     <div class="lodging_list_area">
-    	<div class="picList_area"></div>
-    	<div class="picList_area"></div>
-    	<div class="picList_area"></div>
-    	<div class="picList_area"></div>
-    	
     </div>
   </div>
 

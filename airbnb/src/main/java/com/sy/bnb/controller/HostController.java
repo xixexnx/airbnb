@@ -77,11 +77,11 @@ public class HostController {
 		String facility = req.getParameter("facility");
 		String theme = req.getParameter("theme");
 		
-		String[] facility_list = null;
+		List<String> facility_list = null;
 		String[] theme_list = null;
 		
 		if(facility != null)
-			facility_list = facility.split(",");
+//			facility_list = facility.split(",");
 		if(theme != null)
 			theme_list = theme.split(",");
 

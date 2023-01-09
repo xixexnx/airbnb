@@ -16,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.sy.bnb.dao.MainDAO;
 import com.sy.bnb.model.LodgingVo;
+import com.sy.bnb.model.UserVo;
 
 @Service
 public class MainServiceImpl implements MainService{
@@ -40,24 +41,20 @@ public class MainServiceImpl implements MainService{
 	
 	@Override
 	public List<LodgingVo> getAllLodging(){
-		List<LodgingVo> list = mainDAO.getAllLodging();
-//		FileInputStream fi = null;
-//		String imgPath = "";
-//		int length;
-//		byte[] buffer = new byte[10];
-//		
-//		try {
-//			for(LodgingVo vo : list) {
-//				imgPath = vo.getMain_pic();
-//				fi = new FileInputStream(imgPath);
-//				while((length = fi.read(buffer) != -1){
-//					bout.write(buffer, 0 ,length);				}
-//				
-//			}
-//		} catch (FileNotFoundException e) {
-//			e.printStackTrace();
-//		}
-		return list;
+		return mainDAO.getAllLodging();
+	}
+	
+	@Override
+	public LodgingVo getLodgingDetail(String l_id) {
+		 LodgingVo vo = mainDAO.getLodgingDetail(l_id);
+		 UserVo user = mainDAO.getUserInfo(vo.getUser_email());
+		 List<String> pic_list = mainDAO.getLodgingPic(l_id);
+		 List<String> facility_list = mainDAO.getFacility(l_id);
+		 vo.setFacility_list(facility_list);
+		 
+		 vo.setUserVo(user);
+		 vo.setPic_path_list(pic_list);
+		 return vo;
 	}
 }
 

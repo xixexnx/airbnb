@@ -10,12 +10,6 @@ $(function(){
 		}
 	});
 	
-	$(document).on("click", $(".picList_area"), function(e){
-		if(!$(e.target).hasClass("lodging_list_area")){
-			
-		}
-	});
-	
 	$(".joinBtn").on("click", function(){
 		$(".modal_register").show();
 	});
@@ -89,10 +83,9 @@ function getAllLodging(){
 		url: "lodging",
 		data: {},
 		success: function(data){
-			console.log(data);
 			var str = "";
 			for(var i in data){
-				str += `<div class="picList_area" id="${data[i].l_id}">
+				str += `<div class="picList_area" id="${data[i].l_id}" onclick="getLodgingDetailView(this.id)">
 							<div class="pic_div">
 								<img src="lodging/pic_url?url=${data[i].main_pic}" />
 							</div>
@@ -105,4 +98,8 @@ function getAllLodging(){
 			$(".lodging_list_area").html(str);
 		}
 	});
+}
+
+function getLodgingDetailView(l_id){
+	location.href="lodging/"+l_id;
 }

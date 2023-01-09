@@ -22,15 +22,23 @@ public class LodgingVo {
 	private String add_price;
 	private String weekend_price;
 	
+	private UserVo userVo;
 //	private List<HashMap<String, String>> facility_list;
 //	private List<HashMap<String, String>> theme_list;
 	
-	private String[] facility_list;
+	private List<String> facility_list;
 	private String[] theme_list;
 	
 	private List<String> pic_path_list;
 	private String main_pic;
 	
+	
+	public UserVo getUserVo() {
+		return userVo;
+	}
+	public void setUserVo(UserVo userVo) {
+		this.userVo = userVo;
+	}
 	public String getMain_pic() {
 		return main_pic;
 	}
@@ -151,10 +159,10 @@ public class LodgingVo {
 //	public void setTheme_list(List<HashMap<String, String>> theme_list) {
 //		this.theme_list = theme_list;
 //	}	
-	public String[] getFacility_list() {
+	public List<String> getFacility_list() {
 		return facility_list;
 	}
-	public void setFacility_list(String[] facility_list) {
+	public void setFacility_list(List<String> facility_list) {
 		this.facility_list = facility_list;
 	}
 	public String[] getTheme_list() {

@@ -24,8 +24,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.sy.bnb.model.LodgingVo;
+import com.sy.bnb.model.UserVo;
 import com.sy.bnb.service.MainService;
 
 @Controller
@@ -58,6 +60,12 @@ public class MainController {
 		return mainService.getAllLodging();
 	}
 	
+	@GetMapping("/lodging/{l_id}")
+	public ModelAndView getLodgingDetail(@PathVariable String l_id) {
+		LodgingVo vo = mainService.getLodgingDetail(l_id);
+		return new ModelAndView("lodging_detail").addObject("vo", vo);
+	}
+	
 	@ResponseBody
 	@GetMapping("lodging/pic_url")
 	public void inputPicture(HttpServletRequest req, HttpServletResponse res) {
@@ -76,8 +84,8 @@ public class MainController {
 				e.printStackTrace();
 		}finally {
 			try {
-				bout.close();
-				f.close();
+				if(bout != null) bout.close();
+				if(f != null) f.close();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
