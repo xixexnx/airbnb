@@ -9,6 +9,7 @@
     <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
     <link rel="stylesheet" href="/css/main.css"/>
     <link rel="stylesheet" href="/css/host.css"/>
+	<link rel="icon" href="/image/logo.png">
   
     <title>호스팅 시작하기 - Airbnb</title>
   </head>
@@ -16,7 +17,7 @@
 	<div class="wrap">
 		<div class="header">
 	      	<div class="logo-div">
-		        <div class="logo-img">
+		        <div class="logo-img" onclick="location.href='/host'">
 		        	<img src="/image/logo.png"/>
 		        	<div class="logo-text">airbnb</div>
 		     	</div>
@@ -47,21 +48,24 @@
 				<jsp:include page="/WEB-INF/views/host/include/amenities.jsp"/>
 			</div>
 			<div data-level="7" style="display:none;" class="hosting_col1" >
-				<jsp:include page="/WEB-INF/views/host/include/photos.jsp"/>
+				<jsp:include page="/WEB-INF/views/host/include/theme.jsp"/>
 			</div>
 			<div data-level="8" style="display:none;" class="hosting_col1" >
-				<jsp:include page="/WEB-INF/views/host/include/title.jsp"/>
+				<jsp:include page="/WEB-INF/views/host/include/photos.jsp"/>
 			</div>
 			<div data-level="9" style="display:none;" class="hosting_col1" >
+				<jsp:include page="/WEB-INF/views/host/include/title.jsp"/>
+			</div>
+			<div data-level="10" style="display:none;" class="hosting_col1" >
 				<jsp:include page="/WEB-INF/views/host/include/description.jsp"/>
 			</div>
-			<div data-level="10" style="display:none;" class="hosting_col2">
+			<div data-level="11" style="display:none;" class="hosting_col2">
 				<jsp:include page="/WEB-INF/views/host/include/finish-setup.jsp"/>
 			</div>
-			<div data-level="11" style="display:none;" class="hosting_col1" >
+			<div data-level="12" style="display:none;" class="hosting_col1" >
 				<jsp:include page="/WEB-INF/views/host/include/price.jsp"/>
 			</div>
-			<div data-level="12" style="display:none;" class="hosting_col1_wide" >
+			<div data-level="13" style="display:none;" class="hosting_col1_wide" >
 				<jsp:include page="/WEB-INF/views/host/include/receipt.jsp"/>
 			</div>
 		</form>

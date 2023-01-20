@@ -3,6 +3,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+	<link rel="icon" href="/image/logo.png">
 <meta charset="UTF-8">
 <title>Insert title here</title>
 </head>

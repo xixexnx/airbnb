@@ -6,6 +6,6 @@
 		<span class="subtitle">숙소 이름은 짧을수록 효과적입니다. 나중에 언제든지 변경할 수 있으니, 너무 걱정마세요.</span>
 	</div>
 	<div>
-		<input type="text" name="title"/>
+		<input type="text" name="title" class="input-data"/>
 	</div>
 </div>

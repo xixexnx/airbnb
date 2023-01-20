@@ -13,19 +13,17 @@
 		</div>
 	</div>
 	<div>
-		<input type="text" class="place_input" name="place_road" value="" readonly />
-		<input type="text" class="place_input" name="place_detail" value="" placeholder="상세주소를 입력하세요." />
+		<input type="text" class="place_input input-data" name="place_road" value="" readonly />
+		<input type="text" class="place_input input-data" name="place_detail" value="" placeholder="상세주소를 입력하세요." />
 	</div>
-	
 </div>
-
 <script>
 	var markers = [];
 
 	var container = document.getElementById('map');
 	var options = {
 		center: new kakao.maps.LatLng(33.450701, 126.570667),
-		level: 3
+		level: 2
 	};
 
 	var map = new kakao.maps.Map(container, options);
@@ -149,7 +147,7 @@
 		if($(e.target).hasClass("lo_item")){
 			place = $($(e.target).find(" .lo_road_address")[0]).html();
 		}else{
-			place = $($(e.target).parent().find(" .lo_road_address")[0]).html();
+			place = $($(e.target).parent().find(" .lo_address")[0]).html();
 		}
 		$("input[name=place_road]").val(place);
 	}

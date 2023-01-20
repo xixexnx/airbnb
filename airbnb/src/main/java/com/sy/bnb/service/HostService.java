@@ -1,5 +1,6 @@
 package com.sy.bnb.service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -14,6 +15,7 @@ public interface HostService {
 	
 	int hosting(LodgingVo vo);
 	int hosting_facility(LodgingVo vo);
+	int hosting_theme(LodgingVo vo);
 	
 	void saveFile(HttpServletRequest req, LodgingVo vo);
 	
@@ -22,4 +24,10 @@ public interface HostService {
 	List<Map<String, String>> getStructure();
 	
 	List<LodgingVo> getUserLodging(String user_email);
+	
+	String getHostingManage(HashMap<String, String> param);
+	List<String> getHostingManage(String l_id);
+	int insertHostingManage(HashMap<String, String> param);
+	int deleteHostingManage(HashMap<String, String> param);
+
 }

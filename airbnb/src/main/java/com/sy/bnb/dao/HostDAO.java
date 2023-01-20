@@ -1,5 +1,6 @@
 package com.sy.bnb.dao;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -19,12 +20,20 @@ public class HostDAO {
 		return sqlSession.insert("insertLodging", vo);
 	}
 	
+	public int insertMainPicture(LodgingVo vo) {
+		return sqlSession.insert("insertMainPicture", vo);
+	}
+	
 	public int insertPictures(LodgingVo vo) {
 		return sqlSession.insert("insertPictures", vo);
 	}
 	
 	public int hosting_facility(LodgingVo vo) {
 		return sqlSession.insert("insertLodgingFacility", vo);
+	}
+	
+	public int hosting_theme(LodgingVo vo) {
+		return sqlSession.insert("insertLodgingTheme", vo);
 	}
 	
 	public List<Map<String, String>> getFacility(){
@@ -39,4 +48,19 @@ public class HostDAO {
 		return sqlSession.selectList("getUserLodging", user_email);
 	}
 	
+	public String getHostingManage(HashMap<String, String> param) {
+		return sqlSession.selectOne("getHostingManage", param);
+	}
+	
+	public List<String> getHostingManage(String l_id) {
+		return sqlSession.selectList("getHostingManageList", l_id);
+	}
+	
+	public int insertHostingManage(HashMap<String, String> param) {
+		return sqlSession.insert("insertHostingManage", param);
+	}
+	
+	public int deleteHostingManage(HashMap<String, String> param) {
+		return sqlSession.delete("deleteHostingManage", param);
+	}
 }

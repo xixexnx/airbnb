@@ -1,5 +1,6 @@
 package com.sy.bnb.model;
 
+import java.util.HashMap;
 import java.util.List;
 
 public class LodgingVo {
@@ -8,6 +9,7 @@ public class LodgingVo {
 	private String l_id;
 	private String l_name;
 	private String l_addr;
+	private String l_addr1;
 	private String building_code;
 	private String checkin;
 	private String checkout;
@@ -26,8 +28,10 @@ public class LodgingVo {
 //	private List<HashMap<String, String>> facility_list;
 //	private List<HashMap<String, String>> theme_list;
 	
-	private List<String> facility_list;
-	private String[] theme_list;
+	private List<HashMap<String, String>> facility_list;
+	private List<String> facility_list_string;
+	private List<HashMap<String, String>> theme_list;
+	private List<String> theme_list_string;
 	
 	private List<String> pic_path_list;
 	private String main_pic;
@@ -74,6 +78,12 @@ public class LodgingVo {
 	}
 	public void setL_addr(String l_addr) {
 		this.l_addr = l_addr;
+	}
+	public String getL_addr1() {
+		return l_addr1;
+	}
+	public void setL_addr1(String l_addr1) {
+		this.l_addr1 = l_addr1;
 	}
 	public String getBuilding_code() {
 		return building_code;
@@ -147,29 +157,34 @@ public class LodgingVo {
 	public void setWeekend_price(String weekend_price) {
 		this.weekend_price = weekend_price;
 	}
-//	public List<HashMap<String, String>> getFacility_list() {
-//		return facility_list;
-//	}
-//	public void setFacility_list(List<HashMap<String, String>> facility_list) {
-//		this.facility_list = facility_list;
-//	}
+	public List<String> getFacility_list_string() {
+		return facility_list_string;
+	}
+	public void setFacility_list_string(List<String> facility_list_string) {
+		this.facility_list_string = facility_list_string;
+	}
 //	public List<HashMap<String, String>> getTheme_list() {
 //		return theme_list;
 //	}
 //	public void setTheme_list(List<HashMap<String, String>> theme_list) {
 //		this.theme_list = theme_list;
 //	}	
-	public List<String> getFacility_list() {
+	public List<HashMap<String, String>> getFacility_list() {
 		return facility_list;
 	}
-	public void setFacility_list(List<String> facility_list) {
+	public void setFacility_list(List<HashMap<String, String>> facility_list) {
 		this.facility_list = facility_list;
 	}
-	public String[] getTheme_list() {
+	public List<HashMap<String, String>> getTheme_list() {
 		return theme_list;
 	}
-	public void setTheme_list(String[] theme_list) {
+	public void setTheme_list(List<HashMap<String, String>> theme_list) {
 		this.theme_list = theme_list;
 	}
-	
+	public List<String> getTheme_list_string() {
+		return theme_list_string;
+	}
+	public void setTheme_list_string(List<String> theme_list_string) {
+		this.theme_list_string = theme_list_string;
+	}
 }

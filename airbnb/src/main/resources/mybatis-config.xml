@@ -6,5 +6,6 @@
 		<typeAliases>
 			<typeAlias alias="LodgingVo" type="com.sy.bnb.model.LodgingVo"/>
 			<typeAlias alias="UserVo" type="com.sy.bnb.model.UserVo"/>
+			<typeAlias alias="ReservationVo" type="com.sy.bnb.model.ReservationVo"/>
 		</typeAliases>
 	</configuration>

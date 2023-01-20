@@ -3,7 +3,7 @@
 	<div class="f_t_2">
 		숙소 사진 추가하기
 		<span class="subtitle">
-		숙소 등록을 시작하려면 사진 3장을 제출하셔야 합니다. 나중에 추가하거나 변경하실 수 있습니다.
+		숙소 등록을 시작하려면 사진 5장을 제출하셔야 합니다. 나중에 추가하거나 변경하실 수 있습니다.
 		</span>
 	</div>
 	<div class="drop_box">
@@ -12,7 +12,7 @@
 			</path>
 		</svg>
 		<div>여기로 사진을 끌어다 놓으세요.</div>
-		<div>2장 이상의 사진을 선택하세요.</div>
+		<div>5장 이상의 사진을 선택하세요.</div>
 <!-- 		<div class="upload_box"> -->
 			<input id="host_pic_upload" type="file" name="photo" required="true" multiple="true" />
 <!-- 		</div> -->
@@ -35,6 +35,12 @@
 				사진 추가하기
 			</div>
 			<div class="pic_small_div">
+				<div class='pic_area pic_small'>	
+					사진 추가하기
+				</div>
+				<div class='pic_area pic_small'>	
+					사진 추가하기
+				</div>
 				<div class='pic_area pic_small'>	
 					사진 추가하기
 				</div>

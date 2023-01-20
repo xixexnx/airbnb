@@ -5,9 +5,9 @@
 		<span class="subtitle">언제든지 변경하실 수 있습니다.</span>
 	</div>
 	<div class="price_div">
-		<button type="button">-</button>
-		<input type="text" class="price_input" value="₩60000" placeholder="₩00" name="price" />
-		<button type="button">+</button>
+<!-- 		<button type="button">-</button> -->
+		<input type="text" class="price_input input-data" value="" placeholder="₩00" name="price" />
+<!-- 		<button type="button">+</button> -->
 	</div>
 	<span class="f_3">/박</span>
 </div>

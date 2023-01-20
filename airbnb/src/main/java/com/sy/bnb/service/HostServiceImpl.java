@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -40,6 +41,11 @@ public class HostServiceImpl implements HostService{
 	}
 	
 	@Override
+	public int hosting_theme(LodgingVo vo) {
+		return hostDAO.hosting_theme(vo);
+	}
+	
+	@Override
 	public List<Map<String, String>> getFacility(){
 		return hostDAO.getFacility();
 	}
@@ -61,18 +67,29 @@ public class HostServiceImpl implements HostService{
 		String path = "d:/airbnb/board";
 		String dir_path = "";
 
+		String main_pic_path = "";
 		List<String> pic_path_list = new ArrayList<String>();
 		
-		for(MultipartFile file : files) {
+//		for(MultipartFile file : files) {
+		for(int i=0; i<files.size(); i++) {
+			MultipartFile file = files.get(i);
 			dir_path = path + "/" + vo.getL_id(); // + file.getOriginalFilename();
 			File dir = new File(dir_path);
 			if(!dir.exists()) {
 				dir.mkdir();
 			}
 			String full_path = writeFile(file, file.getOriginalFilename(), dir_path);
-			pic_path_list.add(full_path);
+			
+			if(i == 1) {
+				main_pic_path = full_path;
+			}else {
+				pic_path_list.add(full_path);				
+			}
 		}
+		
+		vo.setMain_pic(main_pic_path);
 		vo.setPic_path_list(pic_path_list);
+		hostDAO.insertMainPicture(vo);
 		hostDAO.insertPictures(vo);
 	}
 	
@@ -102,6 +119,26 @@ public class HostServiceImpl implements HostService{
 	@Override
 	public List<LodgingVo> getUserLodging(String user_email) {
 		return hostDAO.getUserLodging(user_email);
+	}
+
+	@Override
+	public String getHostingManage(HashMap<String, String> param) {
+		return hostDAO.getHostingManage(param);
+	}
+	
+	@Override
+	public List<String> getHostingManage(String l_id){
+		return hostDAO.getHostingManage(l_id);
+	}
+	
+	@Override
+	public int insertHostingManage(HashMap<String, String> param) {
+		return hostDAO.insertHostingManage(param);
+	}
+	
+	@Override
+	public int deleteHostingManage(HashMap<String, String> param) {
+		return hostDAO.deleteHostingManage(param);
 	}
 
 }

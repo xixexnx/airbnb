@@ -20,18 +20,33 @@
 		INSERT INTO LODGING_FACILITY_TBL(LF_ID, L_ID, F_ID)
 		SELECT LF_SEQ.nextval as LF_ID, A.*
 		FROM
-		<foreach collection="facility_list" item="item" separator="UNION ALL" open="(" close=")A">
+		<foreach collection="facility_list_string" item="item" separator="UNION ALL" open="(" close=")A">
 			SELECT #{l_id} as L_ID, #{item} as F_ID
 			FROM DUAL
 		</foreach>
 	</insert>
 	
+	<insert id="insertLodgingTheme" parameterType="LodgingVo">
+		INSERT INTO LODGING_THEME_TBL(LT_ID, L_ID, T_ID)
+		SELECT LT_SEQ.nextval as LT_ID, A.*
+		FROM
+		<foreach collection="theme_list_string" item="item" separator="UNION ALL" open="(" close=")A">
+			SELECT #{l_id} as L_ID, #{item} as T_ID
+			FROM DUAL
+		</foreach>
+	</insert>
+	
+	<insert id="insertMainPicture" parameterType="LodgingVo">
+		INSERT INTO LODGING_PIC_TBL(PIC_ID, L_ID, PIC_URL, PIC_MAIN)
+		VALUES (PIC_SEQ.nextval, #{l_id}, #{main_pic}, 1)
+	</insert>
+	
 	<insert id="insertPictures" parameterType="LodgingVo">
-		INSERT INTO LODGING_PIC_TBL(PIC_ID, L_ID, PIC_URL)
+		INSERT INTO LODGING_PIC_TBL(PIC_ID, L_ID, PIC_URL, PIC_MAIN)
 		SELECT PIC_SEQ.nextval as PIC_ID, A.*
 		FROM
 		<foreach collection="pic_path_list" item="item" separator="UNION ALL" open="(" close=")A">
-			SELECT #{l_id} as L_ID, #{item} as PIC_URL
+			SELECT #{l_id} as L_ID, #{item} as PIC_URL, 0
 			FROM DUAL
 		</foreach>
 	</insert>
@@ -50,8 +65,10 @@
 		FROM STRUCTURE_TBL
 	</select>
 	
-	<select id="getUserLodging" resultType="LodgingVo">
-		SELECT A.L_ID, L_NAME, PRICE as basic_price, PIC_URL AS main_pic
+	<select id="getUserLodging" parameterType="string" resultType="LodgingVo">
+		SELECT A.L_ID, L_NAME, L_ADDR
+			   , REGEXP_SUBSTR(L_ADDR, '[^ ]+', 1, 1) || ', ' || REGEXP_SUBSTR(L_ADDR, '[^ ]+', 1, 2) AS L_ADDR1
+			   , BEDROOM_EA, BED_EA, BATH_EA, PRICE as basic_price, PIC_URL AS main_pic
 		FROM LODGING_TBL A
 		INNER JOIN LODGING_PIC_TBL B
 		ON A.L_ID = B.L_ID
@@ -59,5 +76,28 @@
 		AND PIC_MAIN = '1'
 	</select>
 	
+	<insert id="insertHostingManage" parameterType="hashmap">
+		INSERT INTO LODGING_MANAGE_TBL
+		VALUES(#{l_id}, TO_DATE(#{l_date}, 'YYYY-MM-DD'))
+	</insert>
+	
+	<delete id="deleteHostingManage" parameterType="hashmap">
+		DELETE FROM LODGING_MANAGE_TBL 
+		WHERE L_ID = #{l_id}
+		AND L_DATE = TO_DATE(#{l_date}, 'YYYY-MM-DD')
+	</delete>
+	
+	<select id="getHostingManage" parameterType="hashmap" resultType="string">
+		SELECT DECODE(MAX(L_ID), NULL, 'true', 'false') AS hosting_availability
+		FROM LODGING_MANAGE_TBL 
+		WHERE L_ID = #{l_id}
+		AND L_DATE = TO_DATE(#{l_date}, 'YYYY-MM-DD')
+	</select>
+	
+	<select id="getHostingManageList" parameterType="string" resultType="string">
+		SELECT TO_CHAR(L_DATE, 'YYYYMMDD')
+		FROM LODGING_MANAGE_TBL 
+		WHERE L_ID = #{l_id}
+	</select>
 	
 </mapper>
