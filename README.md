@@ -1,8 +1,22 @@
 # airbnb
 
+https://user-images.githubusercontent.com/64449625/213687802-6b8631ea-e504-45c9-98d4-2554630b6017.mp4
+
+
+
+https://user-images.githubusercontent.com/64449625/213687834-8f8b18ac-63bb-4fec-8713-9b9736ffdb47.mp4
+
+
+
+
+https://user-images.githubusercontent.com/64449625/213687866-b51e3129-eab5-4b57-a7fe-e7d4a26d9c79.mp4
+
+
+
 ---
 
 # 프로젝트 소개
+
 
 ---
 
@@ -16,7 +30,6 @@ github로 이동하기 :  https://github.com/Syeong0013/airbnb.git
 
 # 기술스택
 
----
 
 ### FrontEnd
 
@@ -35,26 +48,21 @@ github로 이동하기 :  https://github.com/Syeong0013/airbnb.git
 
 # IDE
 
----
 
 - Eclipse
 - Oracle
 
 # 기간
 
----
-
 한 달
 
 # 인원
 
----
 
 1인
 
 # 구현 기능
 
----
 
 ## 회원가입
 
