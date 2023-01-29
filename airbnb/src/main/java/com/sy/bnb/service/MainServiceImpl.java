@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -78,6 +79,11 @@ public class MainServiceImpl implements MainService{
 		 UserVo user = mainDAO.getUserInfo(vo.getUser_email());
 		 List<String> pic_list = mainDAO.getLodgingPic(l_id);
 		 List<HashMap<String, String>> facility_list = mainDAO.getFacility(l_id);
+		 List<String> facility_list_string = new ArrayList<String>();
+		 for(HashMap<String, String> map : facility_list) {
+			 facility_list_string.add(map.get("F_ID"));
+		 }
+		 vo.setFacility_list_string(facility_list_string);
 		 vo.setFacility_list(facility_list);
 		 vo.setUserVo(user);
 		 vo.setPic_path_list(pic_list);

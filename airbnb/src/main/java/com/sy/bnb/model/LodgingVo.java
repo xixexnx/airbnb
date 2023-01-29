@@ -11,6 +11,7 @@ public class LodgingVo {
 	private String l_addr;
 	private String l_addr1;
 	private String building_code;
+	private String sid;
 	private String checkin;
 	private String checkout;
 	private String bath_ea;
@@ -19,6 +20,7 @@ public class LodgingVo {
 	private String l_exp;
 	private String basic_person;
 	private String add_person;
+	private String l_state;
 	
 	private String basic_price;
 	private String add_price;
@@ -37,6 +39,18 @@ public class LodgingVo {
 	private String main_pic;
 	
 	
+	public String getSid() {
+		return sid;
+	}
+	public void setSid(String sid) {
+		this.sid = sid;
+	}
+	public String getL_state() {
+		return l_state;
+	}
+	public void setL_state(String l_state) {
+		this.l_state = l_state;
+	}
 	public UserVo getUserVo() {
 		return userVo;
 	}

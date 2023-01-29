@@ -6,8 +6,9 @@
     align-items: center;
 }
 .host_content-wide{
-	width: 95%;
-	margin: auto;
+/* 	width: 80%; */
+/* 	margin: auto; */
+    padding-top: 20px;
 }
 .host_left{
     width: 40%;
@@ -412,12 +413,16 @@
     border-radius: 10px;
     box-shadow: 0 1px 2px rgb(0 0 0 / 8%), 0 4px 12px rgb(0 0 0 / 5%);
     width: 175px;
-    padding: 15px;
+    padding: 10px;
     z-index: 1;
 }
 #host_nav_list>div {
-    padding: 5px;
+    padding: 15px;
     cursor: pointer;
+}
+#host_nav_list>div:hover {
+    background: #F7F7F7;
+    border-radius: 10px;
 }
 #host_content_div{
 	padding: 40px 13%;
@@ -662,12 +667,6 @@ div[role='row']{
 }
 
 .calendar_month_label {
-/*     display: flex; */
-/*     align-items: center; */
-/*     height: 100px; */
-/*     font-size: 22px; */
-/*     font-weight: 600; */
-/*     padding: 0 30px; */
   position: relative;
   margin: auto;
   top: 0px;
@@ -675,10 +674,334 @@ div[role='row']{
   bottom: auto;
   right: auto;
   box-sizing: border-box;
-/*   width: 100%; */
-/*   height: 100%; */
   font-size: 50px;
   text-align: center;
   background-color: #cff09e;    
   position: sticky;
+}
+
+/* host lodging detail */
+.title{
+	display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+li{
+	list-style: none;
+	cursor: pointer;
+}
+.detail_li>a{
+    line-height: 20px;
+	display: block;
+/*     width: 100%; */
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-weight: 600;
+}
+.detail_li>ol{
+	display: none;
+    list-style: none;
+    padding: 0px;
+    border-left: 1px solid #DDDDDD;
+    margin: 0 0 0 16px;
+}
+.detail_li.open>a{
+    background-color: #F7F7F7;
+}
+.detail_li.open>ol{
+    display: block;
+}
+.detail_sub_li{
+    font-size: 16px;
+    line-height: 20px;
+    position: relative;
+    display: block;
+    cursor: pointer;
+    color: #222222;
+    margin-top: 16px;
+    margin-bottom: 16px;
+    padding-left: 20px;
+    border-left: 2px solid transparent;
+}
+.detail_sub_li.on{
+	font-weight: 600;
+    border-left: 2px solid #222222;
+}
+#lodging_detail_content{
+    display: flex;
+/*     justify-content: space-between; */
+}
+#lodgiong_update_content{
+    position: relative;
+/*     height: 1200px; */
+    width: 80%;
+}
+#leftSideBar{
+	width: 20%;
+	position: sticky;
+	height: fit-content;
+	top: 80px;
+}
+.host_wide_content{
+    margin: auto;
+    padding-left: 80px !important;
+    padding-right: 80px !important;
+}
+.lodging_name{
+    margin-top: 25px;
+    padding: 0px 45px;
+}
+
+/* host detail View */
+.host_detail_div{
+    padding: 20px;
+}
+.ld_up_top {
+    font-size: 18px;
+    font-weight: 600;
+}
+.up_btn_div{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.up_btn_div .p_m_btn{
+	width: unset;
+}
+.ld_up_list{
+    padding: 20px 0;
+    border-bottom: 1px solid #ccc;
+}
+.detail_up_btn{
+    min-width: 68px;
+    cursor: pointer;
+	font-size: 16px;
+    padding: 7px 13px;
+	background: transparent;
+	border-radius: 10px;
+	border: none;
+	text-decoration: underline;
+}
+.detail_up_btn:hover{
+	background: rgb(235 235 235 / 67%);
+}
+.detail_val{
+	font-size: 16px;
+	color: gray;
+}
+.lodging_onoff{
+/* 	padding: 10px; */
+/* 	border-radius: 10px; */
+    min-width: 80px;
+}
+.lodging_onoff>span{
+/* 	text-decoration: underline; */
+}
+.lodging_onoff:hover{
+/* 	background: rgb(235 235 235 / 67%); */
+}
+
+/* table */
+.lodging_list_filter{
+	display: flex;
+}
+.lodging_search_btn{
+    border-radius: 32px !important;
+    height: 32px !important;
+    display: inline-flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    flex-direction: row !important;
+    flex: 1 1 0% !important;
+    font-size: 14px !important;
+    background-color: rgb(255, 255, 255) !important;
+    line-height: 18px !important;
+    border: 1px solid rgb(221, 221, 221) !important;
+    cursor: pointer !important;
+    padding: 0px 16px !important;
+    outline: none !important;
+    text-align: center !important;
+}
+.lodging_list_nav{
+	padding-left: 24px;
+    display: flex;
+    align-items: center;
+}
+.search_option, .search_state_option{
+    position: absolute;
+    top: 70;
+    background: white;
+    border: 1px solid rgb(235 235 235 / 67%);
+    border-radius: 10px;
+    box-shadow: rgb(0 0 0 / 28%) 0px 8px 28px !important;
+    width: 175px;
+    padding: 10px;
+    z-index: 4;
+}
+.search_state_option>div{
+    padding: 8px 5px;
+}
+.search_option .up_btn_div {
+    padding: 8px 5px;
+}
+.search_opt_btn{
+	padding: 10px 0;
+	border-top: 1px solid rgb(235, 235, 235);
+}
+.searchApply_btn{
+	background: black;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 10px;
+    float: right;
+    cursor: pointer;
+}
+.state_btn{
+	cursor: pointer;
+    background: transparent;
+    outline: none;
+    padding: 9px 12px;
+    border-radius: 10px;
+    border: none;
+}
+.state_btn>span{
+	text-decoration: underline;
+}
+.state_btn:hover {
+    background: rgb(235 235 235 / 67%);
+}
+.modify_input{
+    border: none;
+    outline: none;
+    width: 100%;
+}
+.modify_title{
+    font-weight: 100 !important;
+    padding-bottom: 0px !important;
+}
+.modify_form{
+	width: 100%;
+}
+.ld_up_list textarea{
+    border: none;
+    min-width: 95%;
+    max-width: 96%;
+    border-radius: 10px;
+    padding: 10px;
+    height: 100px;
+    resize: none;
+    outline: none;
+    font-size: 14px;
+    color: black;
+}
+/* modify open*/
+.ld_up_list.open{
+    padding: 20px;
+    border: 1px solid #ccc;
+    margin: 20px;
+    border-radius: 10px;
+}
+.ld_up_list.open .modify_form{
+	width: 100%;
+}
+.ld_up_list.open .modify_title{
+	display: flex !important;
+    justify-content: space-between !important;
+}
+.ld_up_list.open .close_modify{
+	cursor: pointer;
+    width: 25px !important;
+    height: 25px;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+}
+.ld_up_list.open .close_modify:hover{
+	border-radius: 30px;
+    background: rgb(235 235 235 / 67%);
+}
+.ld_up_list.open .modify_input{
+    padding: 15px;
+    width: 70%;
+    margin-bottom: 20px;
+    border-radius: 10px;
+    outline: none;
+    border: 1px solid #ccc;
+}
+.ld_up_list.open textarea{
+	border: 1px solid #ccc;
+	color: black;
+}
+.ld_up_list.open .modify_footer, #facility_modify_footer{
+	cursor: pointer;
+    display: flex !important;
+    justify-content: space-between !important;
+    border-top: 1px solid #ccc;
+    padding-top: 20px;
+}
+.ld_up_list.open .close_modify_btn, #facility_modify_footer .close_modify_btn{
+	cursor: pointer;
+    background: transparent;
+    padding: 10px 20px;
+    border: none;
+    text-decoration: underline;
+    font-weight: 600;
+}
+.ld_up_list.open .close_modify_btn:hover, #facility_modify_footer .close_modify_btn:hover{
+	border-radius: 15px;
+    background: rgb(235 235 235 / 67%);
+}
+.ld_up_list.open .apply_modify_btn, #facility_modify_footer .apply_modify_btn{
+	cursor: pointer;
+    padding: 10px 20px;
+    background: black;
+    color: white;
+    border: none;
+    border-radius: 15px;
+}
+.ld_up_list.open .apply_modify_btn:disabled, #facility_modify_footer .apply_modify_btn:disabled{
+	background: #ccc;
+    border: none;
+    cursor: not-allowed;
+}
+.ld_up_list.open .show_modify_btn{
+	display: none !important;
+}
+
+#facility_modify_div{
+    display: block;
+    position: fixed;
+    background: white;
+    width: 40%;
+    height: 65%;
+    top: 19%;
+    left: 37%;
+    border-radius: 40px;
+    border: 1px solid #ccc;
+    overflow: auto;
+    box-shadow: 5px 7px 18px 10px rgb(34 36 38 / 22%);
+}
+
+#facility_modify_list{
+    display: grid;
+    grid-auto-flow: row dense;
+    grid-template-columns: var(--breakpoint-grid_column-template, repeat(var(--breakpoint-grid_columns,1),minmax(0,1fr)) );
+    --breakpoint-grid_columns: 4;
+    padding: 30px;    
+    gap: 4px;
+ }
+ 
+ #facility_modify_footer{
+ 	background: white;
+ 	position: sticky;
+ 	bottom: 0;
+ 	padding: 30px;
+ }
+ 
+ #ld_basic_price{
+	width: auto !important; 
+    font-size: 25px !important;
+    font-weight: 100 !important; 
+    margin: 0 !important; 
+    text-align: left;
 }

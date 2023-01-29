@@ -1,7 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
 
-<div class="register_box">
+<div class="register_box modal-content">
     <div class="register_header">
         <span> x </span>
         <b>회원가입</b>

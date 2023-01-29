@@ -63,4 +63,48 @@ public class HostDAO {
 	public int deleteHostingManage(HashMap<String, String> param) {
 		return sqlSession.delete("deleteHostingManage", param);
 	}
+	
+	public int insertLodgingDel(HashMap<String, String> param) {
+		return sqlSession.insert("insertLodgingDel", param);
+	}
+	
+	public int deleteLodgingDel(HashMap<String, String> param) {
+		return sqlSession.delete("deleteLodgingDel", param);
+	}
+	
+	public int updateLodgingTitle(LodgingVo vo) {
+		return sqlSession.update("updateLodgingTitle", vo);
+	}
+	
+	public int updateLodgingExp(LodgingVo vo) {
+		return sqlSession.update("updateLodgingExp", vo);
+	}
+	
+	public int updateLodgingGuest(LodgingVo vo) {
+		return sqlSession.update("updateLodgingGuest", vo);
+	}
+	
+	public List<HashMap<String, String>> getLodgingFacilityCondition(String l_id){
+		return sqlSession.selectList("getLodgingFacilityCondition", l_id);
+	}
+	
+	public int deleteLodgingFacility(LodgingVo vo) {
+		return sqlSession.delete("deleteLodgingFacility", vo);
+	}
+	
+	public int updateLodgingAddr(LodgingVo vo){
+		return sqlSession.update("updateLodgingAddr", vo);
+	}
+	
+	public int updateLodgingStruct(LodgingVo vo){
+		return sqlSession.update("updateLodgingStruct", vo);
+	}
+	
+	public int updateLodgingBBB(LodgingVo vo){
+		return sqlSession.update("updateLodgingBBB", vo);
+	}
+	
+	public int updateLodgingPrice(LodgingVo vo) {
+		return sqlSession.update("updateLodgingPrice", vo);
+	}
 }

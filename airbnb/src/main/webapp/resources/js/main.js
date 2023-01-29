@@ -2,12 +2,20 @@ $(function(){
     getThemeNav();
 	getAllLodging();
 	
-	$(document).on("click", function(e){
-		if($(e.target)[0].className != null && $(e.target)[0].className != ""){
-		    if(($(e.target)[0].className.toString()).includes("modal")){
-				$(e.target).hide();
-			}
-		}
+//	$(document).on("click", function(e){
+//		if($(e.target)[0].className != null && $(e.target)[0].className != ""){
+//		    if(($(e.target)[0].className.toString()).includes("modal")){
+//				$(e.target).hide();
+//			}
+//		}
+//	});
+	$(".modal-content").on("click", function(){
+	    return false;
+	});
+	
+	$(".modal").on("click", function(e){
+		console.log($(e.target));
+		$(".modal").removeClass("modal-on");
 	});
 	
 	$(document).on("click", ".theme_btn", function(e){
@@ -28,25 +36,26 @@ $(function(){
 		LodgingListForTheme(target.attr("data-value"));
 	});
 	
-	$(".searchBar").on("click", function(){
-		$(".modal-wrap").show();
-		openSearchBar();
-	});
-	
 	$(".joinBtn").on("click", function(){
-		$(".modal_register").show();
+//		$(".modal_register").show();
+		chkModalOn();
+		$(".modal_register").addClass("modal-on");
 	});
 	
 	$(".loginBtn").on("click", function(){
-		$(".modal_login").show();
+//		$(".modal_login").show();
+		chkModalOn();
+		$(".modal_login").addClass("modal-on");
 	});
 	
     $(".login_header span").on("click", function(){
-        $(".modal_login").hide();
+//        $(".modal_login").hide();
+		$(".modal_login").removeClass("modal-on");
     });
 
  	$(".register_header span").on("click", function(){
-        $(".modal_register").hide();
+//        $(".modal_register").hide();
+		$(".modal_register").removeClass("modal-on");
     });
 	
 	$("#slideLeft").on("click", function(){
@@ -67,6 +76,7 @@ $(function(){
 	
 	$(".modal-wrap").on("click", function(){
 		$(".modal-content").hide();
+		$(".modal-content").removeClass("modal-on");
 	});
 	
 	$(".modal-wrap-search").on("click", function(){
@@ -157,12 +167,9 @@ function LodgingListForTheme(t_id){
     });
 }
 
-function openSearchBar(){
-//	$("#detail_search_div").show();
-}
-
 function showUserBox(){
-	$(".modal-wrap").show();
+//	$(".modal-wrap").show();
+	$(".modal-wrap").addClass("modal-on");
 	
 	var display = $(".userBar-menu").css("display");
 	
@@ -177,7 +184,7 @@ function showUserBox(){
 function getThemeNav(){
     $.ajax({
         type: "GET",
-        url: "theme",
+        url: "/theme",
         data: {},
         success: function(data){
             var str = "";
@@ -206,7 +213,7 @@ function searchForTheme(e){
 	var t_id = $(e).data('value');
 	$.ajax({
 		type: "GET",
-		url: "theme/"+t_id,
+		url: "/theme/"+t_id,
 		data: {},
 		success: function(data){
 			var str = "";
@@ -229,10 +236,9 @@ function searchForTheme(e){
 function getAllLodging(){
 	$.ajax({
 		type: "GET",
-		url: "lodging",
+		url: "/lodging",
 		data: {},
 		success: function(data){
-			console.log(data);
 			makeLodgingList(data);
 		}
 	});
@@ -270,8 +276,10 @@ function makeLodgingList(data){
 }
 
 function showDetailSearchBar(){
+	chkModalOn();
 	$($(".searchBar")[0]).fadeOut(300, function(){
 		$(".modal-wrap-search").fadeIn(500);
+		$(".modal-wrap-search").addClass("modal-on");
 		
 		$("#detail_search_lodging").slideDown(300, function(){
 			$("#search-location").fadeIn(200);
@@ -282,6 +290,7 @@ function showDetailSearchBar(){
 
 function initSearchBar(){
 	$(".modal-wrap-search").fadeOut(300);
+	$(".modal-wrap-search").removeClass("modal-on");
 	$("#detail_search_lodging").fadeOut(300, function(){
 		$($(".searchBar")[0]).fadeIn(300);
 	});
@@ -431,4 +440,9 @@ function searchAll(){
 			$(".theme_btn").removeClass(".on");
 		}
 	});
+}
+
+function chkModalOn(){
+	initSearchBar();
+	$(".modal-on").removeClass("modal-on");
 }

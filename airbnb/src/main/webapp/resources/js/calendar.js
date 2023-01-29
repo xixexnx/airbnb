@@ -1,5 +1,5 @@
-var s_day;
-var e_day;
+var s_day = null;
+var e_day = null;
 var disabled_day = null;
 
 $(function(){
@@ -30,14 +30,22 @@ function gotoReservation(){
 	var person = $("#gest_no").data("value");
 	var r_date_list = getDateArray(s_day, e_day);
 	
-	$.ajax({
-		type: "POST",
-		url: "/reservation",
-		data: {"l_id": l_id, "person": person, "r_date_list": r_date_list},
-		success: function(data){
-			location.reload();
-		}
-	});
+	if(s_day == null){
+		alert("숙박 시작 일자를 선택하세요.");	
+		return false;
+	}else if(e_day == null){
+		alert("숙박 종료 일자를 선택하세요.");	
+		return false;
+	}else{
+		$.ajax({
+			type: "POST",
+			url: "/reservation",
+			data: {"l_id": l_id, "person": person, "r_date_list": r_date_list},
+			success: function(data){
+				location.reload();
+			}
+		});
+	}
 }
 
 function getDateArray(startDate, endDate){

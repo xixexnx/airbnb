@@ -13,12 +13,14 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -112,13 +114,13 @@ public class HostController {
 		
 		LodgingVo vo = new LodgingVo();
 		vo.setUser_email(user_email);
-		vo.setL_name(l_name);
-		vo.setL_addr(l_addr);
+		vo.setL_name(xssFilter(l_name));
+		vo.setL_addr(xssFilter(l_addr));
 		vo.setBuilding_code(building_code);
 		vo.setBath_ea(bath_ea);
 		vo.setBedroom_ea(bedroom_ea);
 		vo.setBed_ea(bed_ea);
-		vo.setL_exp(l_exp);
+		vo.setL_exp(xssFilter(l_exp));
 		vo.setBasic_person(basic_person);
 		vo.setBasic_price(basic_price);
 		vo.setFacility_list_string(facility_list);
@@ -214,7 +216,127 @@ public class HostController {
 		param.put("l_date", l_date);
 		
 		return hostService.deleteHostingManage(param);
+	}
+
+	@ResponseBody
+	@GetMapping("/lodging/{l_id}/detail")
+	public ModelAndView gotoHostLodgingPage(@PathVariable String l_id) {
+		LodgingVo vo = mainService.getLodgingDetail(l_id);
+		return new ModelAndView("host/host_lodging_detail").addObject("vo", vo);
+	}
+
+	@ResponseBody
+	@GetMapping("/detailView/{l_id}/{detail}")
+	public ModelAndView getLodgingUpdateDetailView(@PathVariable String l_id,  @PathVariable String detail) {
+		LodgingVo vo = mainService.getLodgingDetail(l_id);
+		String url = "";
+		if("info".equals(detail)) {
+			url = "host/update/info";
+		}else if("priceDay".equals(detail)) {
+			url = "host/update/priceDay";
+		}else if("forGuest".equals(detail)) {
+			url = "host/update/forGuest";
+		}
+		return new ModelAndView(url).addObject("vo", vo);
+	}
 	
+	@ResponseBody
+	@PostMapping("/lodging/{l_id}/state")
+	public int setLodgingState(@PathVariable String l_id, HttpServletRequest req) {
+		String state = req.getParameter("state");
+		HashMap<String, String> param = new HashMap<String, String>();
+		
+		param.put("l_id", l_id);
+		param.put("state", state);
+		
+		return hostService.insertLodgingDel(param);
+	}
+	
+	@ResponseBody
+	@DeleteMapping("/lodging/{l_id}/state")
+	public int delLodgingState(@PathVariable String l_id, HttpServletRequest req) {
+		String state = req.getParameter("state");
+		HashMap<String, String> param = new HashMap<String, String>();
+		
+		param.put("l_id", l_id);
+		param.put("state", state);
+		
+		return hostService.deleteLodgingDel(param);
+	}
+	
+	@ResponseBody	
+	@PatchMapping("/lodging/{l_id}/title")
+	public int updateLodgingTitle(@PathVariable String l_id, @RequestBody LodgingVo param) {
+		param.setL_id(l_id);
+		param.setL_name(xssFilter(param.getL_name()));
+		return hostService.setLodgingTitle(param);
+	}
+	
+	@ResponseBody	
+	@PatchMapping("/lodging/{l_id}/guest")
+	public int updateLodgingGuest(@PathVariable String l_id, @RequestBody LodgingVo param){
+		param.setL_id(l_id);
+		return hostService.setLodgingGuest(param);
+	}
+	
+	@ResponseBody	
+	@PatchMapping("/lodging/{l_id}/exp")
+	public int updateLodgingState(@PathVariable String l_id, @RequestBody LodgingVo param) {
+		param.setL_id(l_id);
+		param.setL_exp(xssFilter(param.getL_exp()));
+		return hostService.setLodgingExp(param);
+	}
+	
+	@ResponseBody
+	@GetMapping("/lodging/{l_id}/facility")
+	public List<HashMap<String, String>> getLodgingFacilityCondition(@PathVariable String l_id){
+		return hostService.getLodgingFacilityCondition(l_id);
+	}
+	
+	@ResponseBody
+	@PatchMapping("/lodging/{l_id}/facility")
+	public int getLodgingFacilityCondition(@PathVariable String l_id, @RequestBody LodgingVo vo){
+		vo.setL_id(l_id);
+		return hostService.updateLodgingFacilityCondition(vo);
+	}
+	
+	@ResponseBody	
+	@PatchMapping("/lodging/{l_id}/addr")
+	public int updateLodgingAddr(@PathVariable String l_id, @RequestBody LodgingVo param) {
+		param.setL_id(l_id);
+		param.setL_addr(xssFilter(param.getL_addr()));
+		return hostService.updateLodgingAddr(param);
+	}
+	
+	@ResponseBody	
+	@PatchMapping("/lodging/{l_id}/sid")
+	public int updateLodgingStruct(@PathVariable String l_id, @RequestBody LodgingVo param) {
+		param.setL_id(l_id);
+		return hostService.updateLodgingStruct(param);
+	}
+	
+	@ResponseBody	
+	@PatchMapping("/lodging/{l_id}/bbb")
+	public int updateLodgingBBB(@PathVariable String l_id, @RequestBody LodgingVo param) {
+		param.setL_id(l_id);
+		return hostService.updateLodgingBBB(param);
+	}
+	
+	@ResponseBody
+	@PatchMapping("/lodging/{l_id}/price")
+	public int updateLodgingPrice(@PathVariable String l_id, @RequestBody LodgingVo param) {
+		param.setL_id(l_id);
+		return hostService.updateLodgingPrice(param);
+	}
+	
+	public static String xssFilter(String str) {
+		String result = "";
+		
+		result = str;
+		result = result.replaceAll("[<]", "&lt;");
+		result = result.replaceAll("[>]", "&gt;");
+		
+		return result;
 	}
 }
 

@@ -10,21 +10,16 @@
     <script src="/js/host.js"></script>
     <script src="/js/main.js"></script>
 
-<!--     <script src="/js/bootstrap-table.js"></script> -->
 	<!-- bootstrap table -->
-	<link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.21.2/dist/bootstrap-table.min.css">
+	<link href="https://unpkg.com/bootstrap-table@1.21.2/dist/bootstrap-table.min.css" rel="stylesheet">
 	<script src="https://unpkg.com/bootstrap-table@1.21.2/dist/bootstrap-table.min.js"></script>
-	<script src="https://unpkg.com/bootstrap-table@1.21.2/dist/locale/bootstrap-table-zh-CN.min.js"></script>
   
     <link rel="stylesheet" href="/css/main.css"/>
     <link rel="stylesheet" href="/css/host.css"/>
-   
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.21.2/dist/bootstrap-table.min.css">
+    <link rel="stylesheet" href="/css/table.css"/>
     
-    <link rel="icon" href="/image/logo.png">
-	<title>숙소 관리 - 에어비앤비</title>
+	<title>숙소 관리 - 에어비앤비</title>	
+	<link rel="icon" href="/image/logo.png">
 </head>
 <body>
 	<div class="wrap">
@@ -64,16 +59,60 @@
 	     		
 	     		</div>
 		</div>
-	</div>
 	
 	<div class="host_content-wide">
-		<div>숙소 N개</div>
+		<div class="f_t_3" style="padding-left: 24px;">숙소 <span id="lodging_ea">N</span>개</div>
 		<div class="lodging_list_nav">
-			<div class="lodging_list_search">
-			
-			</div>
 			<div class="lodging_list_filter">
-				<button type="button">침실 및 침대
+				<div>
+					<button id="search_room_state" type="button" class="lodging_search_btn" onclick="openSearchDiv()">침실 및 침대
+						<svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" style="display: block; margin-left: 5px; fill: rgb(113, 113, 113); height: 12px; width: 12px; stroke: currentcolor; stroke-width: 5.33333; overflow: visible;" aria-hidden="true" role="presentation" focusable="false">
+							<g fill="none">
+								<path d="m28 12-11.2928932 11.2928932c-.3905243.3905243-1.0236893.3905243-1.4142136 0l-11.2928932-11.2928932">
+								</path>
+							</g>
+						</svg>
+					</button>
+					<div class="search_option modal-content" style="display:none;">
+						<div class="up_btn_div">
+							<div>침실</div>
+							<div class="p_m_btn">
+								<button type="button" class="minus-btn" style="min-width:none;">-</button>
+								<div id="search_bedroom_ea">0</div>
+								<button type="button" class="plus-btn">+</button>
+							</div>
+						</div>
+						<div class="up_btn_div">
+							<div>침대</div>
+							<div class="p_m_btn">
+								<button type="button" class="minus-btn" style="min-width:none;">-</button>
+								<div id="search_bed_ea">0</div>
+								<button type="button" class="plus-btn">+</button>
+							</div>
+						</div>
+						<div class="up_btn_div">
+							<div>욕실</div>
+							<div class="p_m_btn">
+								<button type="button" class="minus-btn" style="min-width:none;">-</button>
+								<div id="search_bath_ea">0</div>
+								<button type="button" class="plus-btn">+</button>
+							</div>
+						</div>
+						<div class="search_opt_btn">
+							<button class="searchApply_btn" type="button" onclick="searchOptApply()">적용하기</button>
+						</div>
+					</div>
+				</div>
+<!-- 				<button type="button" class="lodging_search_btn">편의시설 -->
+<!-- 					<svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" style="display: block; margin-left: 5px; fill: rgb(113, 113, 113); height: 12px; width: 12px; stroke: currentcolor; stroke-width: 5.33333; overflow: visible;" aria-hidden="true" role="presentation" focusable="false"> -->
+<!-- 						<g fill="none"> -->
+<!-- 							<path d="m28 12-11.2928932 11.2928932c-.3905243.3905243-1.0236893.3905243-1.4142136 0l-11.2928932-11.2928932"> -->
+<!-- 							</path> -->
+<!-- 						</g> -->
+<!-- 					</svg> -->
+<!-- 				</button> -->
+				<div>
+				<button id="search_ld_state" type="button" class="lodging_search_btn" onclick="openStateOpt()">숙소 상태
 					<svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" style="display: block; margin-left: 5px; fill: rgb(113, 113, 113); height: 12px; width: 12px; stroke: currentcolor; stroke-width: 5.33333; overflow: visible;" aria-hidden="true" role="presentation" focusable="false">
 						<g fill="none">
 							<path d="m28 12-11.2928932 11.2928932c-.3905243.3905243-1.0236893.3905243-1.4142136 0l-11.2928932-11.2928932">
@@ -81,31 +120,36 @@
 						</g>
 					</svg>
 				</button>
-				<button type="button">편의시설
-					<svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" style="display: block; margin-left: 5px; fill: rgb(113, 113, 113); height: 12px; width: 12px; stroke: currentcolor; stroke-width: 5.33333; overflow: visible;" aria-hidden="true" role="presentation" focusable="false">
-						<g fill="none">
-							<path d="m28 12-11.2928932 11.2928932c-.3905243.3905243-1.0236893.3905243-1.4142136 0l-11.2928932-11.2928932">
-							</path>
-						</g>
-					</svg>
-				</button>
-				<button type="button">숙소 상태
-					<svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" style="display: block; margin-left: 5px; fill: rgb(113, 113, 113); height: 12px; width: 12px; stroke: currentcolor; stroke-width: 5.33333; overflow: visible;" aria-hidden="true" role="presentation" focusable="false">
-						<g fill="none">
-							<path d="m28 12-11.2928932 11.2928932c-.3905243.3905243-1.0236893.3905243-1.4142136 0l-11.2928932-11.2928932">
-							</path>
-						</g>
-					</svg>
-				</button>
+				<div class="search_state_option modal-content" style="display: none;">
+					<div>
+						<input type="checkbox" name="ld_state" value="ON"/> 
+						<span>운영 중</span>
+					</div>
+					<div>
+						<input type="checkbox" name="ld_state" value="OFF"/>
+						<span>운영 중지</span>
+					</div>
+					<div class="search_opt_btn">
+						<button class="searchApply_btn" type="button" onclick="searchOptApply()">적용하기</button>
+					</div>
+				</div>
+				</div>
 			</div>
-		</div>
+			</div>
 		<div>
 <!-- 		 data-width="100" data-toggle="table" data-sortable="true" data-id-field="l_id" data-ajax="ajaxRequest" data-locale="en-US" -->
-			<table id="table" data-toggle="table" data-click-to-select="true" data-locale="en-US" style="display:none;">
+			<table 
+				id="table" 
+				data-toggle="table" 
+				data-url="/host/lodging"  
+				data-sortable="true"
+				data-search="true"
+				data-row-attributes="rowAttributes">
 				<thead>
 					<tr>
-						<th data-checkbox="true" data-field=""></th>	
+<!-- 						<th data-checkbox="true" data-field=""></th>	 -->
 						<th data-field="l_name" data-sortable="true">숙소</th>
+						<th data-field="l_state" data-sortable="true">상태</th>
 						<th data-field="bedroom_ea" data-sortable="true">침실</th>
 						<th data-field="bed_ea" data-sortable="true">침대</th>
 						<th data-field="bath_ea" data-sortable="true">욕실</th>
@@ -117,56 +161,25 @@
 			</table>
 		</div>
 	</div>
-	
+
+	</div>	
 	<script>
+		function rowAttributes(row, index){
+			return {
+			      'data-toggle': 'popover',
+			      'data-placement': 'bottom',
+			      'data-trigger': 'hover',
+			      'data-href': '/host/lodging/' + row.l_id + '/detail'
+			    }
+		}
+		
 		$(function(){
-			initTable1();	
+			$("#lodging_ea").html($("tbody tr").length);
+			
+// 			$('.lodging_search_btn').click(function () {
+// 				searchTable();
+// 			});
 		});
-		
-		function initTable(){
-			 $("#table").bootstrapTable('destroy').bootstrapTable({
-			      height: 550,
-			      locale: 'en-US',
-			      columns: [
-			        [{
-			          field: 'state',
-			          checkbox: true,
-			        }, {
-			          title: '숙소',
-			          field: 'l_name',
-			          sortable: true,
-			        }, {
-			          title: '침실',
-			          field: 'bedroom_ea',
-			          sortable: true,
-			        }, {
-			          title: '침대',
-			          field: 'bed_ea',
-			          sortable: true,
-			        }, {
-			          title: '욕실',
-			          field: 'bath_ea',
-			          sortable: true,
-			        }, {
-			          title: '위치',
-			          field: 'l_addr1',
-			          sortable: true,
-			        }, {
-			          title: 'l_id',
-			          field: 'l_id',
-			          sortable: true,
-			        }]
-			      ]
-			    })
-		}
-		
-		function ajaxRequest(params){
-			var url = "/host/lodging";
-			$.get(url + '?' + $.param(params.data)).then(function (res) {
-				params.success(res);
-			});
-		}
-		
 	</script>
 </body>
 </html>

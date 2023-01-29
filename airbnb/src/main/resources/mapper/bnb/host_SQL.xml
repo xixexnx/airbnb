@@ -26,6 +26,13 @@
 		</foreach>
 	</insert>
 	
+	<delete id="deleteLodgingFacility" parameterType="LodgingVo">
+		DELETE FROM LODGING_FACILITY_TBL
+		<foreach collection="facility_list_string" item="item" separator="OR" open="WHERE " close="">
+			(L_ID = #{l_id} AND F_ID = #{item})
+		</foreach>
+	</delete>
+	
 	<insert id="insertLodgingTheme" parameterType="LodgingVo">
 		INSERT INTO LODGING_THEME_TBL(LT_ID, L_ID, T_ID)
 		SELECT LT_SEQ.nextval as LT_ID, A.*
@@ -68,10 +75,17 @@
 	<select id="getUserLodging" parameterType="string" resultType="LodgingVo">
 		SELECT A.L_ID, L_NAME, L_ADDR
 			   , REGEXP_SUBSTR(L_ADDR, '[^ ]+', 1, 1) || ', ' || REGEXP_SUBSTR(L_ADDR, '[^ ]+', 1, 2) AS L_ADDR1
-			   , BEDROOM_EA, BED_EA, BATH_EA, PRICE as basic_price, PIC_URL AS main_pic
-		FROM LODGING_TBL A
+			   , BEDROOM_EA, BED_EA, BATH_EA, PRICE as basic_price, PIC_URL AS main_pic, L_STATE, D.S_ID AS building_code
+		FROM (
+			SELECT T1.*, DECODE(T2.L_ID, NULL, 'ON', 'OFF') AS L_STATE
+			FROM LODGING_TBL T1
+			LEFT OUTER JOIN LODGING_DEL_TBL T2
+			ON T1.L_ID = T2.L_ID
+		) A
 		INNER JOIN LODGING_PIC_TBL B
 		ON A.L_ID = B.L_ID
+		INNER JOIN STRUCTURE_TBL D
+		ON A.S_ID = D.S_ID
 		WHERE USER_EMAIL = #{user_email}
 		AND PIC_MAIN = '1'
 	</select>
@@ -100,4 +114,82 @@
 		WHERE L_ID = #{l_id}
 	</select>
 	
+	<insert id="insertLodgingDel" parameterType="hashmap">
+		INSERT INTO LODGING_DEL_TBL
+		VALUES(LD_SEQ.nextval, #{l_id}, SYSDATE)
+	</insert>
+	
+	<delete id="deleteLodgingDel" parameterType="hashmap">
+		DELETE FROM LODGING_DEL_TBL
+		WHERE L_ID = #{l_id}
+	</delete>
+	
+	<update id="modifyLodgingTitle" parameterType="LodgingVo">
+		UPDATE LODGING_TBL
+		SET L_NAME = #{l_name}
+		WHERE L_ID = #{l_id}
+	</update>
+	
+	<update id="modifyLodgingExp" parameterType="LodgingVo">
+		UPDATE LODGING_TBL
+		SET L_EXP = #{l_exp}
+		WHERE L_ID = #{l_id}
+	</update>
+	
+	<update id="modifyLodgingGuestNum" parameterType="LodgingVo">
+		UPDATE LODGING_TBL
+		SET L_NAME = #{l_name}, BASIC_PERSON = #{basic_person}
+		WHERE L_ID = #{l_id}
+	</update>
+	
+	<update id="updateLodgingTitle" parameterType="LodgingVo">
+		UPDATE LODGING_TBL
+		SET L_NAME = #{l_name}
+		WHERE L_ID = #{l_id}
+	</update>
+
+	<update id="updateLodgingExp" parameterType="LodgingVo">
+		UPDATE LODGING_TBL
+		SET L_EXP = #{l_exp}
+		WHERE L_ID = #{l_id}
+	</update>
+	
+	<update id="updateLodgingGuest" parameterType="LodgingVo">
+		UPDATE LODGING_TBL
+		SET BASIC_PERSON = #{basic_person}
+		WHERE L_ID = #{l_id}
+	</update>
+	
+	<select id="getLodgingFacilityCondition" parameterType="string" resultType="hashmap">
+		SELECT A.F_ID, A.F_NAME, A.F_ICON_ID, DECODE(B.F_ID, NULL, 'FALSE', 'TRUE') AS STATE
+		FROM FACILITY_TBL A
+		LEFT OUTER JOIN (
+			SELECT F_ID FROM LODGING_FACILITY_TBL WHERE L_ID = #{l_id}
+			) B
+		ON A.F_ID = B.F_ID
+	</select>
+	
+	<update id="updateLodgingAddr" parameterType="LodgingVo">
+	 	UPDATE LODGING_TBL
+	 	SET L_ADDR = #{l_addr}
+	 	WHERE L_ID = #{l_id}
+	</update>
+	
+	<update id="updateLodgingStruct" parameterType="LodgingVo">
+	 	UPDATE LODGING_TBL
+	 	SET S_ID = #{building_code}
+	 	WHERE L_ID = #{l_id}
+	</update>
+	
+	<update id="updateLodgingBBB" parameterType="LodgingVo">
+	 	UPDATE LODGING_TBL
+	 	SET BED_EA = #{bed_ea}, BATH_EA = #{bath_ea}, BEDROOM_EA = #{bedroom_ea}
+	 	WHERE L_ID = #{l_id}
+	</update>
+	
+	<update id="updateLodgingPrice" parameterType="LodgingVo">
+		UPDATE LODGING_TBL
+	 	SET PRICE = #{basic_price}
+	 	WHERE L_ID = #{l_id}
+	</update>
 </mapper>

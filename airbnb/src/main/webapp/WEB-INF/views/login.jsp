@@ -4,7 +4,7 @@
 <!-- <script src="https://developers.kakao.com/sdk/js/kakao.js"></script> -->
 <script src="/js/join.js"></script>
 
-<div class="login_box">
+<div class="login_box modal-content">
     <div class="login_header">
         <span> x </span>
         <b>로그인</b>

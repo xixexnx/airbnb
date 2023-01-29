@@ -11,7 +11,7 @@ var calendar_cnt = 0;
 var scrollEvt = true;
 
 $(function() {
-	getTheme();
+	getTheme();	
 	getStructure();
 	getFacility();
 	
@@ -19,7 +19,6 @@ $(function() {
 	getCheckOutList();
 	
 	$(document).on("click", function(e){
-		
 		if($(e.target)[0].id != "userLodgingBtn"){
 			var list_display = $("#userLodgingList").css("display");
 			if(list_display=="block"){
@@ -48,19 +47,45 @@ $(function() {
 		readImage(files);
 	});
 
-	$(".minus-btn").on("click", function(e) {
+	$(document).on("click", ".minus-btn", function(e) {
 		var ex_no = $($(e.target).parent().find("div")[0]).html();
-		$($(e.target).parent().find("div")[0]).html(ex_no - 1);
+		
+		if(ex_no == 0){
+			return false;
+		}else{
+			$($(e.target).parent().find("div")[0]).html(ex_no - 1);
+		}
+		
 		if (ex_no - 1 == 0) {
 			$(e.target).attr("disabled", "disabled");
 		}
+		
+		if($(e.target).hasClass("modifyGuest")){
+			saveGuestInfo(ex_no - 1);
+		}else if($(e.target).hasClass("modifyBed")){
+			update_ld_bed(ex_no - 1);
+		}else if($(e.target).hasClass("modifyBedroom")){
+			update_ld_bedroom(ex_no - 1);
+		}else if($(e.target).hasClass("modifyBath")){
+			update_ld_bath(ex_no - 1);
+		}
 	});
 
-	$(".plus-btn").on("click", function(e) {
-		var ex_no = $($(e.target).parent().find("div")[0]).html();
+	$(document).on("click", ".plus-btn", function(e) {
+		var ex_no = $($(e.target).parent().find("div")[ 0]).html();
 		$($(e.target).parent().find("div")[0]).html(parseInt(ex_no) + 1);
 
 		$($(e.target).parent().find(".minus-btn")[0]).removeAttr("disabled");
+	
+		if($(e.target).hasClass("modifyGuest")){
+			saveGuestInfo(parseInt(ex_no) + 1);
+		}else if($(e.target).hasClass("modifyBed")){
+			update_ld_bed(parseInt(ex_no) + 1);
+		}else if($(e.target).hasClass("modifyBedroom")){
+			update_ld_bedroom(parseInt(ex_no) + 1);
+		}else if($(e.target).hasClass("modifyBath")){
+			update_ld_bath(parseInt(ex_no) + 1);
+		}
 	});
 
 	$("#host_calendar").on("click", function() {
@@ -77,6 +102,7 @@ $(function() {
 	
 	$("#host_nav_btn").on("click", function(){
 		$(".modal-wrap").show();
+		$(".modal-wrap").addClass("modal-on");
 		var display = $("#host_nav_list").css("display");
 		
 		if(display == "block"){
@@ -124,6 +150,60 @@ $(function() {
 	$(".gotoUserPage").on("click", function(){
 		window.location.href = "/";
 	});
+	
+	//hosting lodging table
+	$(document).on("click", "#table tbody tr", function(e){
+		var url = $(e.target).parent().attr("data-href");
+		gotoHostLodgingPage(url);
+	});
+	
+	// modify form
+	$(document).on("keyup", ".modify_form input", function(e){
+		var index = $(".modify_form input").index($(e.target));
+		var txt = $($(".modify_form input")[index]).val();
+		var ex_txt = $($(".modify_form input")[index]).attr("data-value");
+		
+		if(txt == ex_txt){
+			$($(".modify_form input")[index]).parents(".ld_up_list").find(".apply_modify_btn").attr("disabled", "disabled");				
+		}else{
+			$($(".modify_form input")[index]).parents(".ld_up_list").find(".apply_modify_btn").attr("disabled", false);
+		}
+	});
+	
+	$(document).on("keyup", ".modify_form textarea", function(e){
+		var index = $(".modify_form textarea").index($(e.target));
+		var txt = $($(".modify_form textarea")[index]).val();
+		var ex_txt = $($(".modify_form textarea")[index]).attr("data-value");
+		
+		if(txt == ex_txt){
+			$($(".modify_form textarea")[index]).parents(".ld_up_list").find(".apply_modify_btn").attr("disabled", "disabled");				
+		}else{
+			$($(".modify_form textarea")[index]).parents(".ld_up_list").find(".apply_modify_btn").attr("disabled", false);
+		}
+	});
+	
+	$(document).on("change", "input[name=ld_state]", function(){
+		var clickVal = $("input[name=ld_state]:checked").val();
+		if($("#ld_state_modify_div").attr("data-value") == clickVal){
+			$("#ld_state_apply_btn").attr("disabled", "disabled");
+		}else{
+			$("#ld_state_apply_btn").attr("disabled", false);
+		}
+	});
+	
+	$(document).on("click", ".ld_up_list .hosting_item_chk", function(e){
+		$(e.target).parents(".ld_up_list").find(".apply_modify_btn").attr("disabled", false);		
+//		$("#ld_facility_apply_btn").attr("disabled", false);
+	});
+	
+	$(document).on("click", ".ld_up_list .hosting_item_chk", function(e){
+		$(e.target).parents(".ld_up_list").find(".apply_modify_btn").attr("disabled", false);				
+//		$("#ld_facility_apply_btn").attr("disabled", false);
+	});
+	
+	$(document).on("click", "#privacy_modify_btn", function(){
+		getModifyStructure();
+	});
 });
 
 function gotoHosting() {
@@ -131,12 +211,17 @@ function gotoHosting() {
 }
 
 function getFacility() {
+	$("#amenities_area").html(makeFacilityList());
+}
+
+function makeFacilityList(){
+	var str = "";
 	$.ajax({
 		type: "GET",
-		url: "facility",
+		url: "/host/facility",
 		data: {},
+		async: false,
 		success: function(data) {
-			var str = "";
 			data.forEach((i) => {
 				str += `<div class="hosting_item">
 						<button type="button" class="hosting_item_chk" value="${i.F_ID}" onclick="chk_btn_multiple(this)">
@@ -151,7 +236,44 @@ function getFacility() {
 						</button>
 					</div>`;
 			});
-			$("#amenities_area").html(str);
+		}
+	});
+	return str;
+}
+
+function getModifyFacility(){
+	var l_id = $($(".lodging_name")[0]).attr("data-value");
+	$.ajax({
+		type: "GET",
+		url: `/host/lodging/${l_id}/facility`,
+		data: {},
+		async: false,
+		success: function(data) {
+			var str = "";
+			data.forEach((i) => {
+				str += `<div class="hosting_item">
+						<button type="button" class="hosting_item_chk`
+						if(i.STATE == 'TRUE'){
+							str += ' on';
+						}
+				str += `" value="${i.F_ID}" onclick="chk_btn_multiple(this)">
+							<div>
+								<svg xmlns="http://www.w3.org/2000/svg" width="45" height="45" fill="currentColor" viewBox="0 0 45 45">
+								  <path d=" ${i.F_ICON_ID}"></path>
+								</svg>
+							</div>
+							<div>
+							${i.F_NAME}
+							</div>
+						</button>
+					</div>`;
+			});
+			$("#facility_modify_list").html(str);
+		},
+		complete: function(){
+			$(".modal-wrap").show();
+			$(".modal-wrap").addClass("modal-on");
+			$("#facility_modify_div").show();
 		}
 	});
 }
@@ -159,7 +281,7 @@ function getFacility() {
 function getTheme() {
 	$.ajax({
 		type: "GET",
-		url: "theme",
+		url: "/host/theme",
 		data: {},
 		success: function(data) {
 			var str = "";
@@ -180,16 +302,48 @@ function getTheme() {
 	});
 }
 
-function getStructure() {
+function makeFacilityList(){
+	var str = "";
 	$.ajax({
 		type: "GET",
-		url: "structure",
+		url: "/host/structure",
 		data: {},
+		async: false,
 		success: function(data) {
-			var str = "";
 			data.forEach((i) => {
 				str += `<div class="hosting_item">
 							<button type="button" class="hosting_item_chk" value="${i.S_ID}" onclick="chk_btn(this)">
+								<div>
+									<img src="${i.S_ICON_URL}" width="25px"/>
+								</div>
+								<div>${i.S_NAME}</div>
+							</button>
+						</div>`;
+			});
+		}
+	});
+	return str;
+}
+
+function getStructure() {
+	$("#structure_area").html(makeFacilityList());
+}
+
+function getModifyStructure(){
+	var str = "";
+	$.ajax({
+		type: "GET",
+		url: "/host/structure",
+		data: {},
+		async: false,
+		success: function(data) {
+			data.forEach((i) => {
+				str += `<div class="hosting_item">
+							<button type="button" class="hosting_item_chk`
+				if($("#ld_sid").attr("data-value") == i.S_ID){
+				str += " on";
+				}
+				str +=	`" value="${i.S_ID}" onclick="chk_btn(this)">
 								<div>
 									<img src="${i.S_ICON_URL}" width="25px"/>
 								</div>
@@ -199,7 +353,9 @@ function getStructure() {
 							</button>
 						</div>`;
 			});
-			$("#structure_area").html(str);
+		},
+		complete: function(){
+			$("#host_privacy_type_area").html(str);
 		}
 	});
 }
@@ -290,7 +446,7 @@ function hosting() {
 	
 	$.ajax({
 		type: "POST",
-		url: "hosting",
+		url: "/host/hosting",
 		contentType: false,
 		processData: false,
 		data: formData,
@@ -615,7 +771,9 @@ function getImpossible_date(){
 
 
 function showUserLodging(){
-	$("#userLodgingList").show();
+	if($("#userLodgingList>div").length > 0){
+		$("#userLodgingList").show();
+	}
 }
 
 function updateCalendar(e){
@@ -813,7 +971,7 @@ function hosting_next_controll(){
 	}else{
 		picChk = true;	
 	}
-	console.log(inputChk + "/" + itemChk +"/" + picChk );
+
 	if(inputChk && itemChk && picChk){
 		$("#hosting_next").attr("disabled", false);
 		$("#hosting_next").css("background", "black");
@@ -827,4 +985,362 @@ function hosting_next_controll(){
 
 function priceToString(price){
 	return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+}
+
+function gotoHostLodgingPage(url){
+	location.href = url;
+}
+
+function openLi(e){
+	var index = $(".detail_li").index(e);
+	$(".detail_li").removeClass("open");
+	$(".detail_sub_li").removeClass("on");
+	$($(".detail_li")[index]).addClass("open");
+
+	$($(".detail_li.open .detail_sub_li")[0]).addClass("on");
+	
+	changeDetailView($($(".detail_li")[index]).attr("data-url"));
+}
+
+/* host lodging detail view func */
+function changeDetailView(url){
+	var l_id = $($(".lodging_name")[0]).attr("data-value");
+	$.ajax({
+		 type: 'GET'
+		,url: "/host/detailView/" + l_id + "/" + url
+		,data: {}
+		,success: function(data){
+			$("#lodgiong_update_content").html(data);
+		}
+	});
+}
+
+function openSearchDiv(){
+	$(".modal-wrap").show();
+	$(".modal-wrap").addClass("modal-on");
+	$(".search_option").show();
+}
+
+function openStateOpt(){
+	$(".modal-wrap").show();
+	$(".modal-wrap").addClass("modal-on");
+	$(".search_state_option").show();
+}
+
+function searchOptApply(){
+	searchTable();
+}
+
+function searchTable(){
+	var data = {};
+	var state = [];
+	
+	if($("#search_bedroom_ea").html() > 0){
+		data.bedroom_ea = $("#search_bedroom_ea").html();
+	}
+	if($("#search_bed_ea").html() > 0){
+		data.bed_ea = $("#search_bed_ea").html();
+	}
+	if($("#search_bath_ea").html() > 0){
+		data.bath_ea = $("#search_bath_ea").html();
+	}
+	if($(".search_state_option input[name='ld_state']:checked").length > 0){
+		for(var i=0; i<$(".search_state_option input[name='ld_state']:checked").length; i++){
+			state.push($($(".search_state_option input[name='ld_state']:checked")[i]).val());
+		}
+		data.l_state = state;
+	}
+
+  	$("#table").bootstrapTable('refreshOptions', 'and');
+
+ 	$("#table").bootstrapTable('filterBy', data);
+}
+
+function close_modify_btn(e){
+	var index = $(".close_modify_btn").index(e);
+	var parentDiv = $(e).parents(".ld_up_list");
+	parentDiv.removeClass("open");
+	parentDiv.find("input").attr("readonly", true);
+	parentDiv.find(".forView").show();
+	parentDiv.find(".forModify").hide();
+	parentDiv.find("input").val(parentDiv.find("input").attr("data-value"));
+//	$($(".modify_form input")[index]).val($($(".modify_form input")[index]).attr("data-value"));
+}
+
+function close_modify(e){
+	var index = $(".close_modify").index(e);
+	var parentDiv = $(e).parents(".ld_up_list");
+	parentDiv.removeClass("open");
+	parentDiv.find("input").attr("readonly", true);
+	parentDiv.find(".forView").show();
+	parentDiv.find(".forModify").hide();
+	parentDiv.find("input").val(parentDiv.find("input").attr("data-value"));
+//	$($(".modify_form input")[index]).val($($(".modify_form input")[index]).attr("data-value"));
+}
+
+function apply_modify(form_id){
+	$(`#${form_id}`).removeClass("open");
+	$(`#${form_id} input`).attr("readonly", true);
+	$(`#${form_id} .forView`).show();
+	$(`#${form_id} .forModify`).hide();
+}
+
+function openModifyForm(e){
+	var index = $(".detail_up_btn").index(e);
+	var div = $($(".detail_up_btn")[index]).parents(".ld_up_list");
+	div.addClass("open");	
+	div.find("input").attr("readonly", false);
+	div.find("textarea").attr("readonly", false);
+	div.find(".forView").hide();
+	div.find(".forModify").show();
+}
+
+function resize(obj){
+ 	obj.style.height = "1px";
+  	obj.style.height = (12+obj.scrollHeight)+"px";
+	
+}
+
+function update_ld_title(){
+	var l_id = $(".lodging_name").attr("data-value");
+	$.ajax({
+		 type: 'PATCH'
+		,url: `/host/lodging/${l_id}/title`
+		,contentType: "application/json; charset=utf-8"
+        ,processData:false
+		,dataType: "json"
+		,data: JSON.stringify({
+			"l_name": $("input[name=ld_title]").val() 
+		})
+		,success: function(data){
+			console.log(data);
+			if(data == 1){
+				$("input[name=ld_title]").attr("data-value", $("input[name=ld_title]").val());
+				$(".lodging_name span").html($("input[name=ld_title]").val());
+				apply_modify("ld_title_form");
+			}else{
+				alert("저장에 실패했습니다.");
+				window.location.reload();
+			}
+		}
+	});
+}
+
+function update_ld_exp(){
+	var l_id = $(".lodging_name").attr("data-value");
+	$.ajax({
+		 type: 'PATCH'
+		,url: `/host/lodging/${l_id}/exp`
+		,contentType: "application/json; charset=utf-8"
+        ,processData:false
+		,dataType: "json"
+		,data: JSON.stringify({
+			"l_exp":  $("textarea.detail_val").val()
+		})
+		,success: function(data){
+			if(data == 1){
+				apply_modify("ld_exp_form");
+			}else{
+				alert("저장에 실패했습니다.");
+				window.location.reload();
+			}
+		}
+	});
+}
+
+function saveGuestInfo(no){
+	var l_id = $(".lodging_name").attr("data-value");
+	$.ajax({
+		 method: 'PATCH'
+		,url: `/host/lodging/${l_id}/guest`
+        ,contentType: "application/json; charset=utf-8"
+        ,processData:false
+		,dataType: "json"
+		,data: JSON.stringify({
+			"basic_person": no
+		})
+		,success: function(data){
+			if(data == 1){
+				alert("적용 완료되었습니다.");
+			}else{
+				alert("저장에 실패했습니다.");
+				window.location.reload();
+			}
+		}
+	});
+}
+
+function update_ld_state(){
+	var state = $("input[name=ld_state]:checked").val();
+	quarterState(state);
+}
+
+function quarterState(state){
+	var l_id = $(".lodging_name").attr("data-value");
+	if(state == "ON"){
+		type = "DELETE"
+	}else{
+		type = "POST";
+	}
+	$.ajax({
+		 type: type
+		,url: `/host/lodging/${l_id}/state`
+		,data: {
+			"state": state
+		}
+		,success: function(data){
+			window.location.reload();
+		}
+	});	
+}
+
+
+
+function update_ld_addr(){
+	var l_id = $(".lodging_name").attr("data-value");
+	$.ajax({
+		 type: 'PATCH'
+		,url: `/host/lodging/${l_id}/addr`
+		,contentType: "application/json; charset=utf-8"
+        ,processData:false
+		,dataType: "json"
+		,data: JSON.stringify({
+			"l_addr": $("input[name=ld_addr]").val() 
+		})
+		,success: function(data){
+			if(data == 1){
+				$("input[name=ld_addr]").attr("data-value", $("input[name=ld_addr]").val());
+				$(".lodging_name span").html($("input[name=ld_addr]").val());
+				apply_modify("ld_addr_form");
+			}else{
+				alert("저장에 실패했습니다.");
+				window.location.reload();s
+			}
+		}
+	});
+}
+
+function close_facility_btn(){
+	$(".modal-wrap").hide();
+	$(".modal-wrap").removeClass("modal-on");
+	$("#facility_modify_div").hide();
+}
+
+function update_ld_facility(){
+	var l_id = $(".lodging_name").attr("data-value");
+	var facility_list_dom = $("#facility_modify_list .hosting_item_chk.on");
+	var facility_list = [];
+	for(var i=0; i<facility_list_dom.length; i++){
+		facility_list.push(facility_list_dom[i].value);
+	}
+
+	$.ajax({
+		 type: 'PATCH'
+		,url: `/host/lodging/${l_id}/facility`
+		,contentType: "application/json; charset=utf-8"
+        ,processData:false
+		,dataType: "json"
+		,data: JSON.stringify({
+			"facility_list_string": facility_list
+		})
+		,success: function(data){
+			if(data == 1){
+				close_facility_btn();
+			}else{
+				alert("저장에 실패했습니다.");
+			}
+		}
+	});
+}
+
+function update_ld_privacy(){
+	var l_id = $(".lodging_name").attr("data-value");
+	var s_id = $("#host_privacy_type_area .hosting_item_chk.on").val();
+	
+	$.ajax({
+		 type: 'PATCH'
+		,url: `/host/lodging/${l_id}/sid`
+		,contentType: "application/json; charset=utf-8"
+        ,processData:false
+		,dataType: "json"
+		,data: JSON.stringify({
+			"building_code": s_id
+		})
+		,success: function(data){
+			if(data == 1){
+				$("#ld_sid").html($($("#host_privacy_type_area .hosting_item_chk.on div")[1]).html());
+				$("#ld_sid").attr("data-value", $("#host_privacy_type_area .hosting_item_chk.on").val());
+				apply_modify("ld_privacy_form");
+			}else{
+				alert("저장에 실패했습니다.");
+			}
+		}
+	});
+}
+function update_ld_bbb(data){
+	var l_id = $(".lodging_name").attr("data-value");
+	$.ajax({
+		 type: 'PATCH'
+		,url: `/host/lodging/${l_id}/bbb`
+		,contentType: "application/json; charset=utf-8"
+        ,processData:false
+		,dataType: "json"
+		,data: JSON.stringify(data)
+		,success: function(data){
+			if(data == 1){
+				alert("저장에 성공했습니다.");
+			}else{
+				alert("저장에 실패했습니다.");
+			}
+		}
+	});
+}
+
+function update_ld_bed(no){
+	var data = {
+		 "bed_ea": no
+		,"bedroom_ea": $("#ld_bedroom_ea").html()
+		,"bath_ea": $("#ld_bath_ea").html()
+	}
+	update_ld_bbb(data);
+}
+
+function update_ld_bedroom(no){
+	var data = {
+		 "bed_ea": $("#ld_bed_ea").html()
+		,"bedroom_ea":no
+		,"bath_ea": $("#ld_bath_ea").html()
+	}
+	update_ld_bbb(data);
+}
+
+function update_ld_bath(no){
+	var data = {
+		 "bed_ea": $("#ld_bed_ea").html()
+		,"bedroom_ea": $("#ld_bedroom_ea").html()
+		,"bath_ea": no
+	}
+	update_ld_bbb(data);
+}
+
+function update_ld_price(){
+	var l_id = $(".lodging_name").attr("data-value");
+	var price = $("#ld_basic_price").val();
+	$.ajax({
+		 type: 'PATCH'
+		,url: `/host/lodging/${l_id}/price`
+		,contentType: "application/json; charset=utf-8"
+        ,processData:false
+		,dataType: "json"
+		,data: JSON.stringify({
+			"basic_price": price
+		})
+		,success: function(data){
+			if(data == 1){
+				apply_modify("ld_price_form");
+			}else{
+				alert("저장에 실패했습니다.");
+			}
+		}
+	});
 }

@@ -30,4 +30,19 @@ public interface HostService {
 	int insertHostingManage(HashMap<String, String> param);
 	int deleteHostingManage(HashMap<String, String> param);
 
+	int setLodgingTitle(LodgingVo vo);
+	int setLodgingExp(LodgingVo vo);
+	int setLodgingGuest(LodgingVo vo);
+	
+	int insertLodgingDel(HashMap<String, String> param);
+	int deleteLodgingDel(HashMap<String, String> param);
+
+	List<HashMap<String, String>> getLodgingFacilityCondition(String l_id);
+	
+	int updateLodgingFacilityCondition(LodgingVo vo);
+	int updateLodgingAddr(LodgingVo vo);
+	int updateLodgingStruct(LodgingVo vo);
+	int updateLodgingBBB(LodgingVo vo);
+	int updateLodgingPrice(LodgingVo vo);
 }
+

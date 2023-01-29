@@ -140,5 +140,85 @@ public class HostServiceImpl implements HostService{
 	public int deleteHostingManage(HashMap<String, String> param) {
 		return hostDAO.deleteHostingManage(param);
 	}
+	
+	@Override
+	public int setLodgingTitle(LodgingVo vo) {
+		return hostDAO.updateLodgingTitle(vo);
+	}
+	
+	@Override
+	public int setLodgingExp(LodgingVo vo) {
+		return hostDAO.updateLodgingExp(vo);
+	}
+	
+	@Override
+	public int setLodgingGuest(LodgingVo vo) {
+		return hostDAO.updateLodgingGuest(vo);
+	}
+	
+	@Override
+	public int insertLodgingDel(HashMap<String, String> param) {
+		return hostDAO.insertLodgingDel(param);
+	}
+	
+	@Override
+	public int deleteLodgingDel(HashMap<String, String> param) {
+		return hostDAO.deleteLodgingDel(param);
+	}
+	
+	@Override
+	public List<HashMap<String, String>> getLodgingFacilityCondition(String l_id){
+		return hostDAO.getLodgingFacilityCondition(l_id);
+	}
+	
+	@Override
+	public int updateLodgingFacilityCondition(LodgingVo vo) {
+		List<HashMap<String, String>> ex_list_map = hostDAO.getLodgingFacilityCondition(vo.getL_id());
+		List<String> new_list = vo.getFacility_list_string();
+		List<String> ex_list = new ArrayList<String>();
+		
+		List<String> insert_list = new_list;
+		List<String> delete_list = ex_list;
+		
+		for(HashMap<String, String> list : ex_list_map) {
+			if("TRUE".equals(list.get("STATE"))) {
+				ex_list.add(list.get("F_ID"));
+			}
+		}
+		
+		insert_list.removeAll(ex_list);
+		delete_list.removeAll(new_list);
+		
+		if(insert_list.size() != 0) {
+			vo.setFacility_list_string(insert_list);
+			hostDAO.hosting_facility(vo);
+		}
+		
+		if(delete_list.size() != 0) {
+			vo.setFacility_list_string(delete_list);
+			hostDAO.deleteLodgingFacility(vo);
+		}
+		
+		return 1;
+	}
+	
+	@Override
+	public int updateLodgingAddr(LodgingVo vo){
+		return hostDAO.updateLodgingAddr(vo);
+	}
+	
+	@Override
+	public int updateLodgingStruct(LodgingVo vo){
+		return hostDAO.updateLodgingStruct(vo);
+	}
 
+	@Override
+	public int updateLodgingBBB(LodgingVo vo){
+		return hostDAO.updateLodgingBBB(vo);
+	}
+	
+	@Override
+	public int updateLodgingPrice(LodgingVo vo) {
+		return hostDAO.updateLodgingPrice(vo);
+	}
 }

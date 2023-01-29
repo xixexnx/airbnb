@@ -29,7 +29,8 @@ $(function(){
 		chkSpace($("input[name='pw']"));
 		
 		var pw = $("input[name='pw']").val();
-		var pattern =  /^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{10,}$/;
+//		var pattern =  /^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{10,}$/;
+		var pattern = /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,25}$/;
 		var msg = "";
 		
 		if(pw.length >= 8 || pattern.test(pw)){
