@@ -18,11 +18,16 @@
 	</bean>
 	
 	<!-- Root Context: defines shared resources visible to all other web components -->
-	<bean class="org.springframework.jdbc.datasource.DriverManagerDataSource" id="dataSource">
-		<property value="oracle.jdbc.driver.OracleDriver" name="driverClassName"/>
+	 <bean class="org.springframework.jdbc.datasource.DriverManagerDataSource" id="dataSource">
+		<property value="com.mysql.cj.jdbc.Driver" name="driverClassName"/>
+		<property value="${mysql.server.url}" name="url"/>
+		<property value="${mysql.server.id}" name="username"/>
+		<property value="${mysql.server.pw}" name="password"/>
+	
+		<!-- <property value="oracle.jdbc.driver.OracleDriver" name="driverClassName"/>	
 		<property value="${oracle.server.url}" name="url"/>
 		<property value="${oracle.server.id}" name="username"/>
-		<property value="${oracle.server.pw}" name="password"/>
+		<property value="${oracle.server.pw}" name="password"/> -->
 	</bean>
 	
 

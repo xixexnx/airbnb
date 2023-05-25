@@ -3,44 +3,56 @@
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 	
 <mapper namespace="com.sy.bnb.dao.MainDAO">
+	<resultMap id="reservationVo" type="ReservationVo">
+	   <id property="r_id" column="r_id" />
+	   <id property="user_email" column="user_email" />
+	   <id property="person" column="person" />
+	   <id property="t_date" column="t_date" />
+	   <id property="start_date" column="start_date" />
+	   <id property="finish_date" column="finish_date" />
+       <association property="lodgingVo"  javaType="LodgingVo" >
+            <result property="l_id"  column="l_id" />
+            <result property="l_name"  column="l_name" />
+       </association>
+	</resultMap>
 	
 	<select id="login" parameterType="UserVo" resultType="UserVo">
 		SELECT USER_EMAIL, USER_NAME
-		FROM USER_TBL
+		FROM user_tbl
 		WHERE USER_EMAIL = #{user_email}
 		AND USER_PW = #{user_pw}
 	</select>
 	
 	<insert id="join" parameterType="hashmap">
-		INSERT INTO USER_TBL
+		INSERT INTO user_tbl
 		VALUES(#{id}, #{pw}, #{name}, #{phone}, 1)
 	</insert>
 	
 	<select id="getTheme" resultType="hashmap">
 		SELECT T_ID, T_NAME, T_ICON_ID
-		FROM THEME_TBL
+		FROM theme_tbl
 	</select>
 	
 	<select id="searchForTheme" parameterType="string" resultType="LodgingVo">
 		SELECT A.L_ID, L_NAME, L_ADDR, PRICE AS basic_price, W_PRICE AS weekend_price, PIC_URL AS main_pic
 		FROM (
 			SELECT T1.* 
-			FROM LODGING_TBL T1
-			INNER JOIN LODGING_THEME_TBL T2
+			FROM lodging_tbl T1
+			INNER JOIN lodging_theme_tbl T2
 			ON T1.L_ID = T2.L_ID
-			LEFT OUTER JOIN LODGING_DEL_TBL T3
+			LEFT OUTER JOIN lodging_del_tbl T3
 			ON T1.L_ID = T3.L_ID
 			WHERE T3.L_ID IS NULL
 			AND T2.T_ID = #{t_id}
 		) A
-		INNER JOIN LODGING_PIC_TBL B
+		INNER JOIN lodging_pic_tbl B
 		ON A.L_ID = B.L_ID
 		WHERE PIC_MAIN = '1'
 	</select>
 	
 	<select id="chkId" parameterType="string" resultType="string">
-		SELECT decode(max(USER_EMAIL), NULL, 'N', 'Y') AS chk
-		FROM USER_TBL
+		SELECT USER_EMAIL AS chk
+		FROM user_tbl
 		WHERE USER_EMAIL = #{chkId}
 	</select>
 	
@@ -48,22 +60,22 @@
 		SELECT A.L_ID, L_NAME, L_ADDR, PRICE AS basic_price, W_PRICE AS weekend_price, PIC_URL AS main_pic
 		FROM (
 			SELECT T1.L_ID, L_NAME, L_ADDR, PRICE, W_PRICE, BASIC_PERSON, ADD_PERSON
-			FROM LODGING_TBL T1
-			LEFT OUTER JOIN LODGING_DEL_TBL T2
+			FROM lodging_tbl T1
+			LEFT OUTER JOIN lodging_del_tbl T2
 			ON T1.L_ID = T2.L_ID
 			WHERE T2.L_ID IS NULL
 		) A
-		INNER JOIN LODGING_PIC_TBL B
+		INNER JOIN lodging_pic_tbl B
 		ON A.L_ID = B.L_ID
 		<if test='checkIn != null and checkOut != null'>
 		LEFT OUTER JOIN (
 			SELECT L_ID
 			FROM (
 				SELECT R_ID
-				FROM RESERVATION_DETAIL_TBL T1
-				WHERE R_DATE BETWEEN TO_DATE(#{checkIn}, 'YY/MM/DD') AND TO_DATE(#{checkOut}, 'YY/MM/DD')
+				FROM reservation_detail_tbl T1
+				WHERE R_DATE BETWEEN DATE_FORMAT(#{checkIn}, '%y/%m/%d') AND DATE_FORMAT(#{checkOut}, '%y/%m/%d')
 			) T2
-			LEFT JOIN RESERVATION_TBL T3
+			LEFT JOIN reservation_tbl T3
 			ON T2.R_ID = T3.R_ID
 			GROUP BY L_ID
 		) C
@@ -71,10 +83,10 @@
 		</if>
 		WHERE PIC_MAIN = '1'
 		<if test='sel_val != null'>
-		AND L_ADDR LIKE '%' || #{sel_val} || '%'
+		AND L_ADDR LIKE CONCAT('%', #{sel_val}, '%')
 		</if>
 		<if test='input_val != null'>
-		AND L_ADDR LIKE '%' || #{input_val} || '%'
+		AND L_ADDR LIKE CONCAT('%', #{input_val}, '%')
 		</if>
 		<if test='guest_no != null'>
 		AND (BASIC_PERSON + ADD_PERSON) >= #{guest_no}
@@ -88,56 +100,56 @@
 		SELECT A.L_ID, L_NAME, L_ADDR, PRICE AS basic_price, W_PRICE AS weekend_price, PIC_URL AS main_pic
 		FROM (
 			SELECT T1.L_ID, L_NAME, L_ADDR, PRICE, W_PRICE
-			FROM LODGING_TBL T1
-			LEFT OUTER JOIN LODGING_DEL_TBL T2
+			FROM lodging_tbl T1
+			LEFT OUTER JOIN lodging_del_tbl T2
 			ON T1.L_ID = T2.L_ID
 			WHERE T2.L_ID IS NULL
 		)A
-		INNER JOIN LODGING_PIC_TBL B
+		INNER JOIN lodging_pic_tbl B
 		ON A.L_ID = B.L_ID
 		WHERE PIC_MAIN = '1'
 	</select>
 	
 	<select id="getLodgingDetail" parameterType="string" resultType="LodgingVo">
-		SELECT A.L_ID, A.USER_EMAIL AS USER_EMAIL, L_NAME, L_ADDR, C.S_NAME AS BUILDING_CODE, C.S_ID AS SID, TO_CHAR(CHECKIN, 'HH24:MI') AS CHECKIN, TO_CHAR(CHECKOUT, 'HH24:MI') AS CHECKOUT, BATH_EA, BEDROOM_EA, BED_EA, L_EXP, BASIC_PERSON, ADD_PERSON, PRICE AS BASIC_PRICE, W_PRICE AS WEEKEND_PRICE, DECODE(D.L_ID, NULL, 'ON', 'OFF') AS L_STATE 
-		FROM LODGING_TBL A
-		INNER JOIN USER_TBL B
+		SELECT A.L_ID, A.USER_EMAIL AS USER_EMAIL, L_NAME, L_ADDR, C.S_NAME AS BUILDING_CODE, C.S_ID AS SID, DATE_FORMAT(CHECKIN, '%H:%i') AS CHECKIN, DATE_FORMAT(CHECKOUT, '%H:%i') AS CHECKOUT, BATH_EA, BEDROOM_EA, BED_EA, L_EXP, BASIC_PERSON, ADD_PERSON, PRICE AS BASIC_PRICE, W_PRICE AS WEEKEND_PRICE, IF(D.L_ID IS NULL, 'ON', 'OFF') AS L_STATE 
+		FROM lodging_tbl A
+		INNER JOIN user_tbl B
 		ON A.USER_EMAIL = B.USER_EMAIL
-		INNER JOIN STRUCTURE_TBL C
+		INNER JOIN structure_tbl C
 		ON A.S_ID = C.S_ID
-		LEFT OUTER JOIN LODGING_DEL_TBL D
+		LEFT OUTER JOIN lodging_del_tbl D
 		ON A.L_ID = D.L_ID
 		WHERE A.L_ID = #{l_id}
 	</select>
 	
 	<select id="getUserInfo" parameterType="string" resultType="UserVo">
 		SELECT USER_EMAIL, USER_NAME, USER_PHONE, USER_LVL
-		FROM USER_TBL
+		FROM user_tbl
 		WHERE USER_EMAIL = #{user_email}
 	</select>
 	
 	<select id="getLodgingPic" parameterType="string" resultType="string">
 		SELECT PIC_URL
-		FROM LODGING_TBL A
-		INNER JOIN LODGING_PIC_TBL B
+		FROM lodging_tbl A
+		INNER JOIN lodging_pic_tbl B
 		ON A.L_ID = B.L_ID
 		WHERE A.L_ID = #{l_id}
 	</select>
 	
 	<select id="getLodgingFacility" parameterType="string" resultType="hashmap">
 		SELECT C.F_NAME, C.F_ICON_ID, C.F_ID
-		FROM LODGING_TBL A
-		INNER JOIN LODGING_FACILITY_TBL B
+		FROM lodging_tbl A
+		INNER JOIN lodging_facility_tbl B
 		ON A.L_ID = B.L_ID
-		INNER JOIN FACILITY_TBL C
+		INNER JOIN facility_tbl C
 		ON B.F_ID = C.F_ID
 		WHERE A.L_ID = #{l_id}
 	</select>
 	
 	<select id="searchFromTheme" parameterType="string" resultType="LodgingVo">
 		SELECT *
-		FROM LODGING_TBL A
-		INNER JOIN LODGING_THEME_TBL B
+		FROM lodging_tbl A
+		INNER JOIN lodging_theme_tbl B
 		ON A.L_ID = B.L_ID
 		WHERE B.T_NAME = #{t_name}
 	</select>
@@ -145,28 +157,28 @@
 	<insert id="insertReservation" parameterType="ReservationVo" useGeneratedKeys="true"
 			  keyProperty="r_id" keyColumn="r_id">
 		<selectKey keyProperty="r_id" resultType="String" order="BEFORE">
-			SELECT 'R' || TO_CHAR(NVL(TO_NUMBER(SUBSTR(MAX(R_ID), 2, 3)), 0) +1, 'FM000')
-			FROM RESERVATION_TBL
+			SELECT CONCAT('R', LPAD(IFNULL(CAST(SUBSTR(MAX(R_ID), 2, 3)as unsigned), 0) +1, '3', '0'))
+			FROM reservation_tbl
 		</selectKey>
-		INSERT INTO RESERVATION_TBL(R_ID, USER_EMAIL, L_ID, PERSON, T_DATE)
-		VALUES(#{r_id}, #{user_email}, #{l_id}, #{person}, SYSDATE)
+		INSERT INTO reservation_tbl(R_ID, USER_EMAIL, L_ID, PERSON, T_DATE)
+		VALUES(#{r_id}, #{user_email}, #{l_id}, #{person}, SYSDATE())
 	</insert>
 	
 	<insert id="insertReservationDetail" parameterType="ReservationVo">
 		<selectKey keyProperty="rd_id" resultType="String" order="BEFORE">
-			SELECT 'RD' || TO_CHAR(NVL(TO_NUMBER(SUBSTR(MAX(RD_ID), 3, 4)), 0) +1, 'FM000')
-			FROM RESERVATION_DETAIL_TBL
+			SELECT CONCAT('RD', LPAD(IFNULL(CAST(SUBSTR(MAX(RD_ID), 3, 4)as unsigned), 0) +1, '3', '0'))
+			FROM reservation_detail_tbl
 		</selectKey>
-		INSERT INTO RESERVATION_DETAIL_TBL(RD_ID, R_ID, R_DATE)
-		VALUES(#{rd_id}, #{r_id}, TO_DATE(#{r_date}, 'YYYY-MM-DD'))
+		INSERT INTO reservation_detail_tbl(RD_ID, R_ID, R_DATE)
+		VALUES(#{rd_id}, #{r_id}, DATE_FORMAT(#{r_date}, '%Y-%m-%d'))
 	</insert>
 	
 	<select id="getReservation" parameterType="string" resultType="ReservationVo">
-		SELECT T1.R_ID AS R_ID, USER_EMAIL, L_ID, TO_CHAR(R_DATE, 'YYYY-MM-DD') AS R_DATE, TO_CHAR(PERSON) AS PERSON
+		SELECT T1.R_ID AS R_ID, USER_EMAIL, L_ID, DATE_FORMAT(R_DATE, '%Y-%m-%d') AS R_DATE, PERSON AS PERSON
 		FROM (
-			SELECT A.R_ID, USER_EMAIL, L_ID, PERSON, T_DATE, RD_ID, R_DATE
-			FROM RESERVATION_TBL A
-			INNER JOIN RESERVATION_DETAIL_TBL B 
+			SELECT A.R_ID, USER_EMAIL, L_ID, CAST(PERSON AS CHAR) AS PERSON, T_DATE, RD_ID, R_DATE
+			FROM reservation_tbl A
+			INNER JOIN reservation_detail_tbl B 
 			ON A.R_ID = B.R_ID
 			WHERE L_ID = #{l_id}
 		) T1
@@ -179,43 +191,92 @@
 		SELECT R_DATE AS DATES
 		FROM (
 			SELECT A.R_ID, USER_EMAIL, L_ID, PERSON, T_DATE, RD_ID, R_DATE
-			FROM RESERVATION_TBL A
-			INNER JOIN RESERVATION_DETAIL_TBL B 
+			FROM reservation_tbl A
+			INNER JOIN reservation_detail_tbl B 
 			ON A.R_ID = B.R_ID
 			WHERE L_ID = #{l_id}
 		) T1
-		LEFT OUTER JOIN RESERVATION_CANCLE_TBL T2
+		LEFT OUTER JOIN reservation_cancle_tbl T2
 		ON T1.R_ID = T2.R_ID
 		WHERE RC_ID IS NULL
 		UNION ALL
 		SELECT L_DATE AS DATES
-		FROM LODGING_MANAGE_TBL
+		FROM lodging_manage_tbl
 		WHERE L_ID = #{l_id}
 	</select>
 	
 	<select id="getCity_si" resultType="string">
 		SELECT MAX(SI)
-		FROM CITY_TBL
+		FROM city_tbl
 		GROUP BY SI
 	</select>
 	
 	<select id="getCity_gu" parameterType="string" resultType="string">
 		SELECT MAX(GU)
-		FROM CITY_TBL
+		FROM city_tbl
 		WHERE SI = #{si}
 		GROUP BY GU
 	</select>
 	
 	<select id="searchCity" parameterType="string" resultType="string">
-		SELECT SI || ', ' || GU
-		FROM CITY_TBL
+		SELECT CONCAT(SI, ', ', GU)
+		FROM city_tbl
 		WHERE (
-			SI || '' || GU LIKE '%' || #{str} || '%'
-			OR SI LIKE '%' || #{str} ||'%'
-			OR GU LIKE '%' || #{str} || '%'
+			CONCAT(SI, '', GU) LIKE CONCAT('%', #{str}, '%')
+			OR SI LIKE CONCAT('%', #{str}, '%')
+			OR GU LIKE CONCAT('%', #{str}, '%')
 		)
 		GROUP BY SI, GU
 	</select>
+	
+	<select id="getReservationList" parameterType="string" resultMap="reservationVo">
+		SELECT T1.R_ID, T1.USER_EMAIL, T1.L_ID, T3.L_NAME, PERSON, DATE_FORMAT(T_DATE, '%Y.%m.%d') AS t_date, DATE_FORMAT(MIN(R_DATE), '%Y.%m.%d') AS start_date, DATE_FORMAT(MAX(R_DATE), '%Y.%m.%d') AS finish_date
+		FROM (
+			SELECT A.R_ID, USER_EMAIL, L_ID, PERSON, T_DATE
+			FROM reservation_tbl A
+			LEFT OUTER JOIN reservation_cancle_tbl B
+			ON A.R_ID = B.R_ID
+			WHERE USER_EMAIL = #{user_email}
+			AND B.R_ID IS NULL
+		)T1
+		INNER JOIN reservation_detail_tbl T2
+		ON T1.R_ID = T2.R_ID
+		INNER JOIN lodging_tbl T3
+		ON T1.L_ID = T3.L_ID
+		GROUP BY T1.R_ID, T1.USER_EMAIL, T1.L_ID, L_NAME, PERSON, T_DATE
+		ORDER BY start_date
+	</select>
+	
+	<select id="getReservationCancleList" parameterType="string" resultMap="reservationVo">
+		SELECT T1.R_ID, T1.USER_EMAIL, T1.L_ID, T3.L_NAME, PERSON, DATE_FORMAT(T_DATE, '%Y.%m.%d %H:%i') AS t_date, DATE_FORMAT(MIN(R_DATE), '%Y.%m.%d') AS start_date, DATE_FORMAT(MAX(R_DATE), '%Y.%m.%d') AS finish_date, T1.RC_DATE
+		FROM (
+			SELECT A.R_ID, USER_EMAIL, L_ID, PERSON, T_DATE, RC_DATE
+			FROM reservation_tbl A
+			LEFT OUTER JOIN reservation_cancle_tbl B
+			ON A.R_ID = B.R_ID
+			WHERE USER_EMAIL = #{user_email}
+			AND B.R_ID IS NOT NULL
+		)T1
+		INNER JOIN reservation_detail_tbl T2
+		ON T1.R_ID = T2.R_ID
+		INNER JOIN lodging_tbl T3
+		ON T1.L_ID = T3.L_ID
+		GROUP BY T1.R_ID, T1.USER_EMAIL, T1.L_ID, L_NAME, PERSON, T_DATE, T1.RC_DATE
+		ORDER BY T1.RC_DATE
+	</select>
+	
+	<insert id="insertReservationCancel" parameterType="java.util.ArrayList">
+		INSERT INTO reservation_cancle_tbl(RC_ID, R_ID, RC_DATE)
+		SELECT (
+			SELECT IFNULL(MAX(rct.rc_id), 0) +1 
+			FROM reservation_cancle_tbl rct
+		) as RC_ID, A.*
+		FROM
+		<foreach collection="array" item="item" separator="UNION ALL" open="(" close=")A">
+			SELECT #{item} as R_ID, sysdate() AS RC_DATE
+			FROM DUAL
+		</foreach>
+	</insert>
 	
 </mapper>
 	
