@@ -174,14 +174,7 @@
 			<artifactId>mybatis</artifactId>
 			<version>3.5.4</version>
 		</dependency>
-		<!-- mysql -->
-		<dependency>
-			<groupId>mysql</groupId>
-			<artifactId>mysql-connector-java</artifactId>	
-			<version>8.0.29</version>
-		</dependency>
-		
-		
+
 		<!-- oracle -->
 		<!-- https://mvnrepository.com/artifact/com.oracle.database.jdbc/ojdbc8 -->
 		<dependency>
