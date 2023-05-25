@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-4.0.xsd
+		http://mybatis.org/schema/mybatis-spring http://mybatis.org/schema/mybatis-spring-1.2.xsd
+		http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd">
+	
+	
+	
+	<bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>classpath:/config/properties/global.properties</value>
+			</list>
+		</property>
+	</bean>
+	
+	<!-- Root Context: defines shared resources visible to all other web components -->
+	 <bean class="org.springframework.jdbc.datasource.DriverManagerDataSource" id="dataSource">
+		<property value="com.mysql.cj.jdbc.Driver" name="driverClassName"/>
+		<property value="${mysql.server.url}" name="url"/>
+		<property value="${mysql.server.id}" name="username"/>
+		<property value="${mysql.server.pw}" name="password"/>
+	
+		<!-- <property value="oracle.jdbc.driver.OracleDriver" name="driverClassName"/>	
+		<property value="${oracle.server.url}" name="url"/>
+		<property value="${oracle.server.id}" name="username"/>
+		<property value="${oracle.server.pw}" name="password"/> -->
+	</bean>
+	
+
+</beans>

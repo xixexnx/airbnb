@@ -1,0 +1,195 @@
+<!-- ?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+<mapper namespace="com.sy.bnb.dao.hostDAO">
+	  
+	<insert id="insertLodging" parameterType="LodgingVo" useGeneratedKeys="true"
+			  keyProperty="l_id" keyColumn="l_id">
+		<selectKey keyProperty="l_id" resultType="String" order="BEFORE">
+			SELECT 'L' || TO_CHAR(NVL(TO_NUMBER(SUBSTR(MAX(L_ID), 2, 3)), 0) +1, 'FM000')
+			FROM LODGING_TBL
+		</selectKey>
+		INSERT INTO LODGING_TBL(L_ID, USER_EMAIL, L_NAME, L_ADDR, S_ID, CHECKIN, CHECKOUT
+								,BATH_EA, BEDROOM_EA, BED_EA, L_EXP, BASIC_PERSON, ADD_PERSON, PRICE)
+		VALUES(#{l_id}, #{user_email}, #{l_name}, #{l_addr}, #{building_code}, TO_TIMESTAMP('14:00', 'HH24:MI'),TO_TIMESTAMP('11:00', 'HH24:MI')
+				,#{bath_ea}, #{bedroom_ea}, #{bed_ea}, #{l_exp}, #{basic_person}, 0, #{basic_price})
+	</insert>
+	
+	<insert id="insertLodgingFacility" parameterType="LodgingVo">
+		INSERT INTO LODGING_FACILITY_TBL(LF_ID, L_ID, F_ID)
+		SELECT LF_SEQ.nextval as LF_ID, A.*
+		FROM
+		<foreach collection="facility_list_string" item="item" separator="UNION ALL" open="(" close=")A">
+			SELECT #{l_id} as L_ID, #{item} as F_ID
+			FROM DUAL
+		</foreach>
+	</insert>
+	
+	<delete id="deleteLodgingFacility" parameterType="LodgingVo">
+		DELETE FROM LODGING_FACILITY_TBL
+		<foreach collection="facility_list_string" item="item" separator="OR" open="WHERE " close="">
+			(L_ID = #{l_id} AND F_ID = #{item})
+		</foreach>
+	</delete>
+	
+	<insert id="insertLodgingTheme" parameterType="LodgingVo">
+		INSERT INTO LODGING_THEME_TBL(LT_ID, L_ID, T_ID)
+		SELECT LT_SEQ.nextval as LT_ID, A.*
+		FROM
+		<foreach collection="theme_list_string" item="item" separator="UNION ALL" open="(" close=")A">
+			SELECT #{l_id} as L_ID, #{item} as T_ID
+			FROM DUAL
+		</foreach>
+	</insert>
+	
+	<insert id="insertMainPicture" parameterType="LodgingVo">
+		INSERT INTO LODGING_PIC_TBL(PIC_ID, L_ID, PIC_URL, PIC_MAIN)
+		VALUES (PIC_SEQ.nextval, #{l_id}, #{main_pic}, 1)
+	</insert>
+	
+	<insert id="insertPictures" parameterType="LodgingVo">
+		INSERT INTO LODGING_PIC_TBL(PIC_ID, L_ID, PIC_URL, PIC_MAIN)
+		SELECT PIC_SEQ.nextval as PIC_ID, A.*
+		FROM
+		<foreach collection="pic_path_list" item="item" separator="UNION ALL" open="(" close=")A">
+			SELECT #{l_id} as L_ID, #{item} as PIC_URL, 0
+			FROM DUAL
+		</foreach>
+	</insert>
+	
+	<insert id="insertLodgingManage" parameterType="LodgingVo">
+		
+	</insert>
+	
+	<select id="getFacility" resultType="hashmap">
+		SELECT F_ID, F_P_NAME, F_NAME, F_ICON_ID
+		FROM FACILITY_TBL
+	</select>
+	
+	<select id="getStructure" resultType="hashmap">
+		SELECT S_ID, S_NAME, S_ICON_URL
+		FROM STRUCTURE_TBL
+	</select>
+	
+	<select id="getUserLodging" parameterType="string" resultType="LodgingVo">
+		SELECT A.L_ID, L_NAME, L_ADDR
+			   , REGEXP_SUBSTR(L_ADDR, '[^ ]+', 1, 1) || ', ' || REGEXP_SUBSTR(L_ADDR, '[^ ]+', 1, 2) AS L_ADDR1
+			   , BEDROOM_EA, BED_EA, BATH_EA, PRICE as basic_price, PIC_URL AS main_pic, L_STATE, D.S_ID AS building_code
+		FROM (
+			SELECT T1.*, DECODE(T2.L_ID, NULL, 'ON', 'OFF') AS L_STATE
+			FROM LODGING_TBL T1
+			LEFT OUTER JOIN LODGING_DEL_TBL T2
+			ON T1.L_ID = T2.L_ID
+		) A
+		INNER JOIN LODGING_PIC_TBL B
+		ON A.L_ID = B.L_ID
+		INNER JOIN STRUCTURE_TBL D
+		ON A.S_ID = D.S_ID
+		WHERE USER_EMAIL = #{user_email}
+		AND PIC_MAIN = '1'
+	</select>
+	
+	<insert id="insertHostingManage" parameterType="hashmap">
+		INSERT INTO LODGING_MANAGE_TBL
+		VALUES(#{l_id}, TO_DATE(#{l_date}, 'YYYY-MM-DD'))
+	</insert>
+	
+	<delete id="deleteHostingManage" parameterType="hashmap">
+		DELETE FROM LODGING_MANAGE_TBL 
+		WHERE L_ID = #{l_id}
+		AND L_DATE = TO_DATE(#{l_date}, 'YYYY-MM-DD')
+	</delete>
+	
+	<select id="getHostingManage" parameterType="hashmap" resultType="string">
+		SELECT DECODE(MAX(L_ID), NULL, 'true', 'false') AS hosting_availability
+		FROM LODGING_MANAGE_TBL 
+		WHERE L_ID = #{l_id}
+		AND L_DATE = TO_DATE(#{l_date}, 'YYYY-MM-DD')
+	</select>
+	
+	<select id="getHostingManageList" parameterType="string" resultType="string">
+		SELECT TO_CHAR(L_DATE, 'YYYYMMDD')
+		FROM LODGING_MANAGE_TBL 
+		WHERE L_ID = #{l_id}
+	</select>
+	
+	<insert id="insertLodgingDel" parameterType="hashmap">
+		INSERT INTO LODGING_DEL_TBL
+		VALUES(LD_SEQ.nextval, #{l_id}, SYSDATE)
+	</insert>
+	
+	<delete id="deleteLodgingDel" parameterType="hashmap">
+		DELETE FROM LODGING_DEL_TBL
+		WHERE L_ID = #{l_id}
+	</delete>
+	
+	<update id="modifyLodgingTitle" parameterType="LodgingVo">
+		UPDATE LODGING_TBL
+		SET L_NAME = #{l_name}
+		WHERE L_ID = #{l_id}
+	</update>
+	
+	<update id="modifyLodgingExp" parameterType="LodgingVo">
+		UPDATE LODGING_TBL
+		SET L_EXP = #{l_exp}
+		WHERE L_ID = #{l_id}
+	</update>
+	
+	<update id="modifyLodgingGuestNum" parameterType="LodgingVo">
+		UPDATE LODGING_TBL
+		SET L_NAME = #{l_name}, BASIC_PERSON = #{basic_person}
+		WHERE L_ID = #{l_id}
+	</update>
+	
+	<update id="updateLodgingTitle" parameterType="LodgingVo">
+		UPDATE LODGING_TBL
+		SET L_NAME = #{l_name}
+		WHERE L_ID = #{l_id}
+	</update>
+
+	<update id="updateLodgingExp" parameterType="LodgingVo">
+		UPDATE LODGING_TBL
+		SET L_EXP = #{l_exp}
+		WHERE L_ID = #{l_id}
+	</update>
+	
+	<update id="updateLodgingGuest" parameterType="LodgingVo">
+		UPDATE LODGING_TBL
+		SET BASIC_PERSON = #{basic_person}
+		WHERE L_ID = #{l_id}
+	</update>
+	
+	<select id="getLodgingFacilityCondition" parameterType="string" resultType="hashmap">
+		SELECT A.F_ID, A.F_NAME, A.F_ICON_ID, DECODE(B.F_ID, NULL, 'FALSE', 'TRUE') AS STATE
+		FROM FACILITY_TBL A
+		LEFT OUTER JOIN (
+			SELECT F_ID FROM LODGING_FACILITY_TBL WHERE L_ID = #{l_id}
+			) B
+		ON A.F_ID = B.F_ID
+	</select>
+	
+	<update id="updateLodgingAddr" parameterType="LodgingVo">
+	 	UPDATE LODGING_TBL
+	 	SET L_ADDR = #{l_addr}
+	 	WHERE L_ID = #{l_id}
+	</update>
+	
+	<update id="updateLodgingStruct" parameterType="LodgingVo">
+	 	UPDATE LODGING_TBL
+	 	SET S_ID = #{building_code}
+	 	WHERE L_ID = #{l_id}
+	</update>
+	
+	<update id="updateLodgingBBB" parameterType="LodgingVo">
+	 	UPDATE LODGING_TBL
+	 	SET BED_EA = #{bed_ea}, BATH_EA = #{bath_ea}, BEDROOM_EA = #{bedroom_ea}
+	 	WHERE L_ID = #{l_id}
+	</update>
+	
+	<update id="updateLodgingPrice" parameterType="LodgingVo">
+		UPDATE LODGING_TBL
+	 	SET PRICE = #{basic_price}
+	 	WHERE L_ID = #{l_id}
+	</update>
+</mapper-->

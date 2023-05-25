@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+<mapper namespace="com.sy.bnb.dao.hostDAO">
+	<resultMap id="reservationVo" type="ReservationVo">
+	   <id property="r_id" column="r_id" />
+	   <id property="user_email" column="user_email" />
+	   <id property="person" column="person" />
+	   <id property="t_date" column="t_date" />
+	   <id property="start_date" column="start_date" />
+	   <id property="finish_date" column="finish_date" />
+	      <association property="lodgingVo"  javaType="LodgingVo" >
+	           <result property="l_id"  column="l_id" />
+	           <result property="l_name"  column="l_name" />
+	      </association>
+	</resultMap>
+	
+	
+	<insert id="insertLodging" parameterType="LodgingVo" useGeneratedKeys="true"
+			  keyProperty="l_id" keyColumn="l_id">
+		<selectKey keyProperty="l_id" resultType="String" order="BEFORE">
+			SELECT CONCAT('L', LPAD(IFNULL(CAST(SUBSTR(MAX(L_ID), 2, 3)as unsigned), 0) +1, '3', '0'))
+			FROM lodging_tbl
+		</selectKey>
+		INSERT INTO lodging_tbl(L_ID, USER_EMAIL, L_NAME, L_ADDR, S_ID, CHECKIN, CHECKOUT
+								,BATH_EA, BEDROOM_EA, BED_EA, L_EXP, BASIC_PERSON, ADD_PERSON, PRICE)
+		VALUES(#{l_id}, #{user_email}, #{l_name}, #{l_addr}, #{building_code}, STR_TO_DATE('14:00', '%H:%i'),STR_TO_DATE('11:00', '%H:%i')
+				,#{bath_ea}, #{bedroom_ea}, #{bed_ea}, #{l_exp}, #{basic_person}, 0, #{basic_price})
+	</insert>
+	
+	<insert id="insertLodgingFacility" parameterType="LodgingVo">
+		INSERT INTO lodging_facility_tbl(L_ID, F_ID) VALUES
+		<foreach collection="facility_list_string" item="item" separator="),(" open="(" close=")">
+			#{l_id}, #{item}
+		</foreach>
+	</insert>
+	
+	<delete id="deleteLodgingFacility" parameterType="LodgingVo">
+		DELETE FROM lodging_facility_tbl
+		<foreach collection="facility_list_string" item="item" separator="OR" open="WHERE " close="">
+			(L_ID = #{l_id} AND F_ID = #{item})
+		</foreach>
+	</delete>
+	
+	<insert id="insertLodgingTheme" parameterType="LodgingVo">
+		INSERT INTO lodging_theme_tbl(L_ID, T_ID) VALUES
+		<foreach collection="theme_list_string" item="item" separator="),(" open="(" close=")">
+			#{l_id}, #{item}
+		</foreach>
+	</insert>
+	
+	<insert id="insertMainPicture" parameterType="LodgingVo">
+		INSERT INTO lodging_pic_tbl(L_ID, PIC_URL, PIC_MAIN)
+		VALUES (#{l_id}, #{main_pic}, 1)  
+	</insert>
+	
+	<insert id="insertPictures" parameterType="LodgingVo">
+		INSERT INTO lodging_pic_tbl(L_ID, PIC_URL, PIC_MAIN) VALUES
+		<foreach collection="pic_path_list" item="item" separator="),(" open="(" close=")">
+			#{l_id}, #{item}, 0
+		</foreach>
+	</insert>
+	
+	<insert id="insertLodgingManage" parameterType="LodgingVo">
+		
+	</insert>
+	
+	<select id="getFacility" resultType="hashmap">
+		SELECT F_ID, F_P_NAME, F_NAME, F_ICON_ID
+		FROM facility_tbl
+	</select>
+	
+	<select id="getStructure" resultType="hashmap">
+		SELECT S_ID, S_NAME, S_ICON_URL
+		FROM structure_tbl
+	</select>
+	
+	<select id="getUserReservation" parameterType="hashmap" resultMap="reservationVo">
+		SELECT R_ID, USER_EMAIL, L_ID, L_NAME, PERSON, t_date, start_date, finish_date
+		FROM
+		(
+			SELECT T1.R_ID, T1.USER_EMAIL, T1.L_ID, T3.L_NAME, PERSON, DATE_FORMAT(T_DATE, '%Y.%m.%d') AS t_date, DATE_FORMAT(MIN(R_DATE), '%Y.%m.%d') AS start_date, DATE_FORMAT(MAX(R_DATE), '%Y.%m.%d') AS finish_date
+			FROM (
+				SELECT A.R_ID, USER_EMAIL, L_ID, PERSON, T_DATE
+				FROM reservation_tbl A
+				LEFT OUTER JOIN reservation_cancle_tbl B
+				ON A.R_ID = B.R_ID
+				WHERE USER_EMAIL = #{user_email}
+				AND B.R_ID IS NULL
+			)T1
+			INNER JOIN reservation_detail_tbl T2
+			ON T1.R_ID = T2.R_ID
+			INNER JOIN lodging_tbl T3
+			ON T1.L_ID = T3.L_ID
+			GROUP BY T1.R_ID, T1.USER_EMAIL, T1.L_ID, L_NAME, PERSON, T_DATE
+		) TBL
+		WHERE 1=1
+		<if test='isOver.equals("before")'>
+		AND start_date &lt; SYSDATE()		
+		</if>
+		<if test='isOver.equals("after")'>
+		AND start_date &gt; SYSDATE()
+		</if>
+		ORDER BY start_date
+	</select>
+	
+	<select id="getUserLodging" parameterType="string" resultType="LodgingVo">
+		SELECT  A.L_ID, L_NAME, L_ADDR
+				,CONCAT(REGEXP_SUBSTR(L_ADDR, '[^ ]+', 1, 1), ', ', REGEXP_SUBSTR(L_ADDR, '[^ ]+', 1, 2)) AS L_ADDR1
+				, BEDROOM_EA, BED_EA, BATH_EA, PRICE as basic_price, PIC_URL AS main_pic, L_STATE, D.S_ID AS building_code
+		FROM (
+			SELECT T1.*, IF(T2.L_ID IS NULL, 'ON', 'OFF') AS L_STATE
+			FROM lodging_tbl T1
+			LEFT OUTER JOIN lodging_del_tbl T2
+			ON T1.L_ID = T2.L_ID
+		) A
+		INNER JOIN lodging_pic_tbl B
+		ON A.L_ID = B.L_ID
+		INNER JOIN structure_tbl D
+		ON A.S_ID = D.S_ID
+		WHERE USER_EMAIL = #{user_email}
+		AND PIC_MAIN = '1'
+	</select>
+	
+	<insert id="insertHostingManage" parameterType="hashmap">
+		INSERT INTO lodging_manage_tbl
+		VALUES(#{l_id}, DATE_FORMAT(#{l_date}, '%Y-%m-%d'))
+	</insert>
+	
+	<delete id="deleteHostingManage" parameterType="hashmap">
+		DELETE FROM lodging_manage_tbl 
+		WHERE L_ID = #{l_id}
+		AND L_DATE = DATE_FORMAT(#{l_date}, '%Y-%m-%d')
+	</delete>
+	
+	<select id="getHostingManage" parameterType="hashmap" resultType="string">
+		SELECT IF(MAX(L_ID) IS NULL, 'true', 'false') AS hosting_availability
+		FROM lodging_manage_tbl 
+		WHERE L_ID = #{l_id}
+		AND L_DATE = DATE_FORMAT(#{l_date}, '%Y-%m-%d')
+	</select>
+	
+	<select id="getHostingManageList" parameterType="string" resultType="string">
+		SELECT DATE_FORMAT(L_DATE, '%Y%m%d')
+		FROM lodging_manage_tbl 
+		WHERE L_ID = #{l_id}
+	</select>
+	
+	<insert id="insertLodgingDel" parameterType="hashmap">
+		INSERT INTO lodging_del_tbl(L_ID, DEL_DATE)
+		VALUES(#{l_id}, SYSDATE())
+	</insert>
+	
+	<delete id="deleteLodgingDel" parameterType="hashmap">
+		DELETE FROM lodging_del_tbl
+		WHERE L_ID = #{l_id}
+	</delete>
+	
+	<update id="modifyLodgingTitle" parameterType="LodgingVo">
+		UPDATE lodging_tbl
+		SET L_NAME = #{l_name}
+		WHERE L_ID = #{l_id}
+	</update>
+	
+	<update id="modifyLodgingExp" parameterType="LodgingVo">
+		UPDATE lodging_tbl
+		SET L_EXP = #{l_exp}
+		WHERE L_ID = #{l_id}
+	</update>
+	
+	<update id="modifyLodgingGuestNum" parameterType="LodgingVo">
+		UPDATE lodging_tbl
+		SET L_NAME = #{l_name}, BASIC_PERSON = #{basic_person}
+		WHERE L_ID = #{l_id}
+	</update>
+	
+	<update id="updateLodgingTitle" parameterType="LodgingVo">
+		UPDATE lodging_tbl
+		SET L_NAME = #{l_name}
+		WHERE L_ID = #{l_id}
+	</update>
+
+	<update id="updateLodgingExp" parameterType="LodgingVo">
+		UPDATE lodging_tbl
+		SET L_EXP = #{l_exp}
+		WHERE L_ID = #{l_id}
+	</update>
+	
+	<update id="updateLodgingGuest" parameterType="LodgingVo">
+		UPDATE lodging_tbl
+		SET BASIC_PERSON = #{basic_person}
+		WHERE L_ID = #{l_id}
+	</update>
+	
+	<select id="getLodgingFacilityCondition" parameterType="string" resultType="hashmap">
+		SELECT A.F_ID, A.F_NAME, A.F_ICON_ID, IF(B.F_ID IS NULL, 'FALSE', 'TRUE') AS STATE
+		FROM facility_tbl A
+		LEFT OUTER JOIN (
+			SELECT F_ID FROM lodging_facility_tbl WHERE L_ID = #{l_id}
+			) B
+		ON A.F_ID = B.F_ID
+	</select>
+	
+	<update id="updateLodgingAddr" parameterType="LodgingVo">
+	 	UPDATE lodging_tbl
+	 	SET L_ADDR = #{l_addr}
+	 	WHERE L_ID = #{l_id}
+	</update>
+	
+	<update id="updateLodgingStruct" parameterType="LodgingVo">
+	 	UPDATE lodging_tbl
+	 	SET S_ID = #{building_code}
+	 	WHERE L_ID = #{l_id}
+	</update>
+	
+	<update id="updateLodgingBBB" parameterType="LodgingVo">
+	 	UPDATE lodging_tbl
+	 	SET BED_EA = #{bed_ea}, BATH_EA = #{bath_ea}, BEDROOM_EA = #{bedroom_ea}
+	 	WHERE L_ID = #{l_id}
+	</update>
+	
+	<update id="updateLodgingPrice" parameterType="LodgingVo">
+		UPDATE lodging_tbl
+	 	SET PRICE = #{basic_price}
+	 	WHERE L_ID = #{l_id}
+	</update>
+</mapper>

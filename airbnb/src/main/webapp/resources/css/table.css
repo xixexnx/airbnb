@@ -1,0 +1,71 @@
+#table{
+    border-spacing: 0;
+    margin: 10px 0;
+    display: inline-table !important;
+   	border-collapse: collapse !important;
+    width: calc(100% - 24px) !important;
+    margin-left: 12px !important;
+    margin-right: 12px !important;
+    
+}
+
+#table tr{
+	cursor: pointer !important;
+	padding: 15px 0;
+}
+
+#table tbody tr:hover{
+    border-radius: 8px !important;
+    background: rgb(247, 247, 247) !important;
+}
+
+#table td, #table th{
+    border-bottom: 1px solid rgb(235, 235, 235) !important;
+}
+
+#table td{
+	padding: 20px 20px;
+}
+
+.th-inner.sortable.both{
+/*     padding: 6px !important; */
+    width: fit-content;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    font-size: 13px;
+    color: gray;
+    text-align: initial;
+}
+.bootstrap-table.bootstrap5 .float-right {
+	float: left !important;
+	margin-left: 25px;	
+}
+.bootstrap-table.bootstrap5 .float-right>input{
+	padding: 10px;
+	border: 1px solid #d7d7d7;
+	border-radius: 10px;
+	outline: none;
+}
+
+ 
+/* reservation List CSS */
+#reservation_table{
+    /* border-collapse: collapse; */
+    border-top: 1px solid rgb(235 235 235 / 100%);
+    border-spacing: 0;
+    width: 100%;
+    cursor: pointer;
+}
+#reservation_table td:nth-child(1){
+	text-align: center;
+}
+#reservation_table tr{
+	border: 1px solid rgb(235 235 235 / 100%);
+}
+#reservation_table td{
+	/* border: 1px solid black; */
+	border-bottom: 1px solid rgb(235 235 235 / 100%);
+    padding: 10px;	
+}
